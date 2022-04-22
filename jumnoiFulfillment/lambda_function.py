@@ -1,5 +1,4 @@
 import json
-
 from dialogflow_fulfillment import QuickReplies, WebhookClient
 
 

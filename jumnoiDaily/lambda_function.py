@@ -33,6 +33,7 @@ def lambda_handler(event, context):
             object_url = (
                 f"https://{BUCKET_NAME}.s3.{BUCKET_REGION}.amazonaws.com/{obj_key}"
             )
+
             msg = {
                 "type": "image",
                 "originalContentUrl": object_url,
