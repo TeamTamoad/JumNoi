@@ -1,0 +1,171 @@
+{
+  "id": "c1ebd5eb-2bca-430c-802c-2a194c2c7352",
+  "name": "Note Exp - cancel",
+  "auto": true,
+  "condition": "",
+  "conditionalFollowupEvents": [],
+  "conditionalResponses": [],
+  "context": [
+    "note-process"
+  ],
+  "contexts": [
+    "note-process"
+  ],
+  "endInteraction": false,
+  "events": [],
+  "fallbackIntent": false,
+  "liveAgentHandoff": false,
+  "parentId": null,
+  "followUpIntents": [],
+  "priority": 500000,
+  "responses": [
+    {
+      "action": "NoteExp-start.NoteExp-start-cancel",
+      "affectedContexts": [
+        {
+          "name": "cancel-followup",
+          "lifespan": 2,
+          "parameters": {}
+        }
+      ],
+      "parameters": [],
+      "defaultResponsePlatforms": {},
+      "messages": [
+        {
+          "type": "message",
+          "condition": "",
+          "speech": [
+            "ยกเลิกการบันทึก"
+          ]
+        }
+      ],
+      "resetContexts": false
+    }
+  ],
+  "rootParentId": null,
+  "templates": [],
+  "userSays": [
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "ไม่ต้องแล้ว",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "404d3deb-a252-4b06-90bd-bf5cb347e375",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "หยุด",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "533a38d1-b785-4ca7-bb2b-d20374550891",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "เลิกทำ",
+          "userDefined": false
+        }
+      ],
+      "count": 1,
+      "id": "48518e1f-ffd4-48b8-8115-a28e659b10a6",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "ข้าม",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "a947927b-8e33-4ec4-b952-26b423bd2f30",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "ปิด",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "2dabde39-cdbd-4e70-af01-663107e16c42",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "ไม่เอาแล้ว",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "a92da662-3e9f-430b-9f69-9a4b19dd9a62",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "ไม่เป็นไร",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "78c8f027-658b-4d0e-a235-2d0114d87ccf",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "ยกเลิก",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "b3cc3db4-fde4-424d-a88b-c1ba9db74142",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "ล้มเลิก",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "36f807e3-1fb5-4024-a09f-772125fe6e37",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "หยุดให้หน่อย",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "41e4368e-9138-4b56-9654-659304838000",
+      "updated": null
+    }
+  ],
+  "webhookForSlotFilling": false,
+  "webhookUsed": false
+}

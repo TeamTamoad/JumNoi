@@ -1,0 +1,86 @@
+{
+  "id": "b3c9f23e-7894-4e94-8dbd-2ad848405af5",
+  "name": "Note Exp - start",
+  "auto": true,
+  "condition": "",
+  "conditionalFollowupEvents": [],
+  "conditionalResponses": [],
+  "context": [],
+  "contexts": [],
+  "endInteraction": false,
+  "events": [],
+  "fallbackIntent": false,
+  "liveAgentHandoff": false,
+  "parentId": null,
+  "followUpIntents": [],
+  "priority": 500000,
+  "responses": [
+    {
+      "action": "",
+      "affectedContexts": [
+        {
+          "name": "NoteExp-start-followup",
+          "lifespan": 2
+        },
+        {
+          "name": "note-process",
+          "lifespan": 1
+        }
+      ],
+      "parameters": [],
+      "defaultResponsePlatforms": {},
+      "messages": [
+        {
+          "type": "message",
+          "condition": "",
+          "speech": [
+            "กรุณาส่งรูปสินค้าที่ต้องการบันทึก"
+          ]
+        }
+      ],
+      "resetContexts": false
+    }
+  ],
+  "rootParentId": null,
+  "templates": [],
+  "userSays": [
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "จำที",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "d28eb6b4-b789-40c4-828c-93e02e6e1dcc",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "เริ่ม",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "665a91fa-f8b5-401e-aab5-3dc2ab993038",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "จำหน่อย",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "11e112a4-5897-4844-957c-b5f44e5a262e",
+      "updated": null
+    }
+  ],
+  "webhookForSlotFilling": false,
+  "webhookUsed": false
+}

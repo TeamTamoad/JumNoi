@@ -1,0 +1,186 @@
+{
+  "id": "d10d2f6a-b37a-4fa8-82c8-71af5ee547a5",
+  "name": "Note Exp - exp image - no",
+  "auto": true,
+  "condition": "",
+  "conditionalFollowupEvents": [],
+  "conditionalResponses": [],
+  "context": [
+    "NoteExp-expimage-followup"
+  ],
+  "contexts": [
+    "NoteExp-expimage-followup"
+  ],
+  "endInteraction": false,
+  "events": [],
+  "fallbackIntent": false,
+  "liveAgentHandoff": false,
+  "parentId": "bf69830f-723d-47cb-9c12-0ccf43024010",
+  "followUpIntents": [],
+  "priority": 500000,
+  "responses": [
+    {
+      "action": "NoteExp-start.NoteExp-start-custom.NoteExp-product-custom.NoteExp-expimage-no",
+      "affectedContexts": [
+        {
+          "name": "NoteExp-product-followup",
+          "lifespan": 2
+        },
+        {
+          "name": "note-process",
+          "lifespan": 2
+        }
+      ],
+      "parameters": [],
+      "defaultResponsePlatforms": {},
+      "messages": [
+        {
+          "type": "message",
+          "condition": "",
+          "speech": [
+            "กรุณาส่งข้อมูลวันหมดอายุอีกครั้ง"
+          ]
+        }
+      ],
+      "resetContexts": false
+    }
+  ],
+  "rootParentId": "b3c9f23e-7894-4e94-8dbd-2ad848405af5",
+  "templates": [],
+  "userSays": [
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "ไม่ถูกต้อง",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "e2cdb688-4919-4b91-a5ae-f68dedd8e0ae",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "ม่ายช่าย",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "88065001-88ce-41fc-84e1-3f8438e7e4b4",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "ผิด",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "f760268d-82eb-486c-a57d-821fe53b3d74",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "ฉันไม่เห็นด้วย",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "185aeb1d-0789-4474-8eb0-a66ba2ab509e",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "ฉันไม่อยากทำ",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "2899e3f5-a0a3-486e-9c7c-0305dc896e02",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "ไม่เอา",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "99ee4e58-ccc7-49fd-816b-7599fd7b341d",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "ไม่",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "e7fe85ed-ea29-4bf0-8417-86185885f55e",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "ไม่สนใจ",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "57c18f0c-8a8d-41cf-882f-6fa18fda3163",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "ไม่เอานะ",
+          "userDefined": false
+        }
+      ],
+      "count": 1,
+      "id": "b94a0a45-b654-488f-8f1b-f67cf1cb5ee7",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "ไม่ล่ะ ขอบคุณ",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "efe83fad-c5bc-4c06-acab-41d55db7f3fe",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "ไม่ทำนะ",
+          "userDefined": true
+        }
+      ],
+      "count": 0,
+      "id": "71c1bc5f-50bb-432b-b6be-10066b70c9b2",
+      "updated": null
+    }
+  ],
+  "webhookForSlotFilling": false,
+  "webhookUsed": false
+}
