@@ -13,7 +13,7 @@ MONTH_NUMBER = {
 
 def get_date_regex() -> re.Pattern[str]:
     seperator = r"\/|-|\."
-    month_name = "|".join(itertools.chain(calendar.month_abbr, calendar.month_name))
+    month_name = "|".join(itertools.chain(calendar.month_abbr[1:], calendar.month_name[1:]))
     month_number = r"1[0-2]|0?[1-9]"
     day = r"3[01]|[12][0-9]|0?[1-9]"
     year = r"(?:20)?\d{2}"
