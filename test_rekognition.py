@@ -16,9 +16,10 @@ def get_date_regex() -> re.Pattern[str]:
     month_name = "|".join(itertools.chain(calendar.month_abbr[1:], calendar.month_name[1:]))
     month_number = r"1[0-2]|0?[1-9]"
     day = r"3[01]|[12][0-9]|0?[1-9]"
-    year = r"(?:20)?\d{2}"
+    year_front = r"20\d{2}"
+    year_back = r"(?:20)?\d{2}"
     return re.compile(
-        f"({year}|{month_number}|{day})({seperator})?({month_name}|{month_number}|{day})\\2({year}|{day})",
+        f"({year_front}|{month_number}|{day})({seperator})?({month_name}|{month_number}|{day})\\2({year_back}|{day})",
         re.IGNORECASE,
     )
 
