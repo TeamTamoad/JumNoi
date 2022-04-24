@@ -3,15 +3,20 @@ import re
 
 import boto3
 
-rekog_client = boto3.client("rekognition")
 
-seperator = r"\/|-|\."
-month = r"Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|1[0-2]|0?[1-9]"
-day = r"3[01]|[12][0-9]|0?[1-9]"
-year = r"(?:20)?\d{2}"
-date_regex = re.compile(
-    f"({year}|{month}|{day})({seperator})?({month}|{day})\\2({year}|{day})"
-)
+def get_date_regex() -> re.Pattern[str]:
+    seperator = r"\/|-|\."
+    month = r"Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|1[0-2]|0?[1-9]"
+    day = r"3[01]|[12][0-9]|0?[1-9]"
+    year = r"(?:20)?\d{2}"
+    return re.compile(
+        f"({year}|{month}|{day})({seperator})?({month}|{day})\\2({year}|{day})",
+        re.IGNORECASE,
+    )
+
+
+rekog_client = boto3.client("rekognition")
+date_regex = get_date_regex()
 
 
 def lambda_handler(event, context):
