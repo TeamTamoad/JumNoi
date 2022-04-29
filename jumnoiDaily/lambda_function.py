@@ -37,7 +37,7 @@ def lambda_handler(event, context):
         for i in range(0, len(s3_url), 12):
             msg = {
                 "type": "flex",
-                "altText": "this is a flex message",
+                "altText": "รายการสินค้าใกล้หมดอายุ",
                 "contents": {
                     "type": "carousel",
                     "contents": [
