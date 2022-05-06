@@ -2,16 +2,16 @@ import base64
 import calendar
 import itertools
 import json
+import os
 import re
 from datetime import date
 
 import boto3
 import requests
 from dialogflow_fulfillment import QuickReplies, WebhookClient
-from dotenv import dotenv_values
 
-config = dotenv_values()
-LINE_ACCESS_TOKEN = config["LINE_ACCESS_TOKEN"]
+LINE_ACCESS_TOKEN = os.getenv("LINE_ACCESS_TOKEN")
+assert LINE_ACCESS_TOKEN != None
 
 MONTH_NUMBER = {
     month.upper(): idx for (idx, month) in enumerate(calendar.month_abbr)
