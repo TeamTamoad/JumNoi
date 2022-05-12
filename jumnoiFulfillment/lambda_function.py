@@ -1,6 +1,7 @@
 import base64
 import calendar
 import itertools
+import urllib3
 import json
 import re
 from datetime import date
@@ -12,6 +13,13 @@ from dotenv import dotenv_values
 
 config = dotenv_values()
 LINE_ACCESS_TOKEN = config["LINE_ACCESS_TOKEN"]
+BUCKET_NAME = config["BUCKET_NAME"]
+BUCKET_REGION = config["BUCKET_REGION"]
+TABLE_NAME = config["TABLE_NAME"]
+
+dynamodb_client = boto3.client("dynamodb")
+
+http = urllib3.PoolManager()
 
 MONTH_NUMBER = {
     month.upper(): idx for (idx, month) in enumerate(calendar.month_abbr)
@@ -109,15 +117,160 @@ def lambda_handler(event, context):
         )
         agent.add(f"วันหมดอายุของสินค้าคือวันที่ {dt} ใช่หรือไม่")
         # agent.add(QuickReplies(quick_replies=['ใช่เลย', 'ไม่ใช่']))
-
+        
+    def getMemoCustom_handler(agent: WebhookClient):
+        expDate = body["queryResult"]["parameters"]["expDate"].split("T")[0]
+        userId = body["originalDetectIntentRequest"]["payload"]["data"]["source"]["userId"]
+        
+        dynamodb_response = dynamodb_client.query(
+            TableName=TABLE_NAME,
+            KeyConditionExpression="userId = :userId AND expDate = :expDate",
+            ExpressionAttributeValues={":userId": {"S": userId}, ":expDate": {"S": expDate}},
+        )
+        
+        if len(dynamodb_response.get("Items", [])) == 0:
+            msg = {
+                "type": "text",
+                "text": f"คุณไม่มีสินค้าที่กำลังจะหมดอายุในวันที่ {expDate} ค่ะ",
+            }
+            push_message(userId, msg)
+        
+        
+        for item in dynamodb_response.get("Items", []):
+            s3_url = [e.get("S") for e in item.get("s3Url", {}).get("L", [])]
+    
+            msg = {
+                "type": "text",
+                "text": f"คุณมีสินค้าที่กำลังจะหมดอายุในวันที่ {expDate} จำนวน {len(s3_url)} รายการ",
+            }
+            push_message(userId, msg)
+    
+            # each carousel message can contain no more than 12 images
+            for i in range(0, len(s3_url), 12):
+                msg = {
+                    "type": "flex",
+                    "altText": "รายการสินค้าใกล้หมดอายุ",
+                    "contents": {
+                        "type": "carousel",
+                        "contents": [
+                            {
+                                "type": "bubble",
+                                "body": {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                        {
+                                            "type": "image",
+                                            "url": f"https://{BUCKET_NAME}.s3.{BUCKET_REGION}.amazonaws.com/{url}",
+                                            "size": "full",
+                                        }
+                                    ],
+                                    "paddingAll": "0px",
+                                },
+                            }
+                            for url in s3_url[i : i + 12]
+                        ],
+                    },
+                }
+                push_message(userId, msg)
+        
+        # agent.add(f"รายการที่หมดอายุในวันที่ {expDate} มีดังนี้")
+    
+    def getMemo_handler(agent: WebhookClient):
+        userId = body["originalDetectIntentRequest"]["payload"]["data"]["source"]["userId"]
+        
+        payload = {
+                    "type": "flex",
+                    "altText": "This is a Flex Message",
+                    "contents": {
+                        "type": "bubble",
+                        "hero": {
+                            "type": "image",
+                            "size": "full",
+                            "aspectRatio": "20:13",
+                            "aspectMode": "cover",
+                            "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_5_carousel.png"
+                        },
+                        "body": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "spacing": "sm",
+                            "contents": [{
+                                            "type": "text",
+                                            "text": "กรุณาเลือกวันที่",
+                                            "wrap": True,
+                                            "weight": "regular",
+                                            "size": "xl"
+                                        },
+                                        {
+                                            "type": "box",
+                                            "layout": "baseline",
+                                            "contents": [{
+                                                        "type": "text",
+                                                        "text": "เลือกวันเพื่อแสดงรายการสินค้าที่มีวันหมดอายุภายในวันที่เลือก",
+                                                        "wrap": True,
+                                                        "weight": "regular",
+                                                        "flex": 0
+                                                        }]
+                                        }]
+                            },
+                            "footer": {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "spacing": "sm",
+                                    "contents": [
+                                      {
+                                        "type": "button",
+                                        "style": "primary",
+                                        "action": {
+                                          "type": "datetimepicker",
+                                          "label": "เลือกวัน",
+                                          "data": "เลือกวัน",
+                                          "mode": "date"
+                                        }
+                                      },
+                                      {
+                                        "type": "button",
+                                        "action": {
+                                          "type": "postback",
+                                          "label": "ยกเลิก",
+                                          "data": "ยกเลิก"
+                                        }
+                                      }
+                                    ]
+                                  }
+                        }
+                    }
+        
+                       
+        push_message(userId, payload)
+        
     agent = WebhookClient(body)
 
     handler = {
         "Note Exp - exp image": exp_image_handler,
         "Note Exp - exp text": exp_text_handler,
         "Note Exp - exp image - yes": save_handler,
+        
+        "Get memo - start - custom" : getMemoCustom_handler,
+        "Get memo - start": getMemo_handler
+
     }
 
     agent.handle_request(handler)
 
     return agent.response
+    
+
+def push_message(userId, payload):
+    http.request(
+        "POST",
+        "https://api.line.me/v2/bot/message/push",
+        headers={
+            "Authorization": f"Bearer {LINE_ACCESS_TOKEN}",
+            "Content-Type": "application/json",
+        },
+        body=json.dumps({"to": userId, "messages": [payload]}),
+        retries=False,
+    )
+    
