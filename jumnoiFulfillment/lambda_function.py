@@ -8,10 +8,10 @@ from datetime import date
 
 import boto3
 import requests
-from dialogflow_fulfillment import QuickReplies, WebhookClient
+from dialogflow_fulfillment import WebhookClient
 
 LINE_ACCESS_TOKEN = os.getenv("LINE_ACCESS_TOKEN")
-assert LINE_ACCESS_TOKEN != None
+assert LINE_ACCESS_TOKEN is not None
 
 MONTH_NUMBER = {
     month.upper(): idx for (idx, month) in enumerate(calendar.month_abbr)
@@ -85,9 +85,9 @@ def lambda_handler(event, context):
         dates = []
         for text in res["TextDetections"]:
             # remove all whitespaces from the testing string
-            text["DetectedText"] = "".join(text["DetectedText"].split())
-            result = date_regex.match(text["DetectedText"])
-            if result:
+            detected_text = "".join(text["DetectedText"].split())
+            result = date_regex.match(detected_text)
+            if result is not None:
                 capture_groups = result.groups()
                 date = create_date(
                     capture_groups[0], capture_groups[2], capture_groups[3]
