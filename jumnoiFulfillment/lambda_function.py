@@ -68,7 +68,8 @@ def lambda_handler(event, context):
     print(body)
 
     def save_handler(agent: WebhookClient):
-        print(agent.parameters)
+        print("agent.parameters in save_handler", agent.parameters)
+        print("body in save_handler", body)
         agent.add(f"บันทึกเรียบร้อย")
 
     def exp_image_handler(agent: WebhookClient):
@@ -112,11 +113,13 @@ def lambda_handler(event, context):
 
     def exp_text_handler(agent: WebhookClient):
         print(body["queryResult"]["parameters"]["expDate"])
-        dt = body["queryResult"]["parameters"]["expDate"]
+        exp_date = body["queryResult"]["parameters"]["expDate"]
         agent.context.set(
-            "noteexp-expimage-followup", lifespan_count=2, parameters={"expDate": dt}
+            "noteexp-expimage-followup",
+            lifespan_count=2,
+            parameters={"expDate": exp_date},
         )
-        agent.add(f"วันหมดอายุของสินค้าคือวันที่ {dt} ใช่หรือไม่")
+        agent.add(f"วันหมดอายุของสินค้าคือวันที่ {exp_date} ใช่หรือไม่")
         # agent.add(QuickReplies(quick_replies=['ใช่เลย', 'ไม่ใช่']))
 
     agent = WebhookClient(body)
