@@ -5,6 +5,7 @@ import json
 import os
 import re
 from datetime import date
+from typing import List
 
 import boto3
 import requests
@@ -82,23 +83,31 @@ def lambda_handler(event, context):
         image = base64.decodebytes(base64.b64encode(image_data.content))
 
         res = rekog_client.detect_text(Image={"Bytes": image})
-        dates = []
+        detected_dates: List[date] = []
         for text in res["TextDetections"]:
             # remove all whitespaces from the testing string
             detected_text = "".join(text["DetectedText"].split())
             result = date_regex.match(detected_text)
             if result is not None:
                 capture_groups = result.groups()
-                date = create_date(
+                detected_date = create_date(
                     capture_groups[0], capture_groups[2], capture_groups[3]
                 )
-                dates.append(str(date))
+                detected_dates.append(detected_date)
 
-        dt = dates[0]
+        detected_dates.sort(reverse=True)
+        try:
+            exp_date = detected_dates[0]
+        except IndexError:
+            exp_date = date.today()
+        exp_date = str(exp_date)
+
         agent.context.set(
-            "noteexp-expimage-followup", lifespan_count=2, parameters={"expDate": dt}
+            "noteexp-expimage-followup",
+            lifespan_count=2,
+            parameters={"expDate": exp_date},
         )
-        agent.add(f"วันหมดอายุของสินค้าคือวันที่ {dt} ใช่หรือไม่")
+        agent.add(f"วันหมดอายุของสินค้าคือวันที่ {exp_date} ใช่หรือไม่")
         # agent.add(QuickReplies(quick_replies=['ใช่เลย', 'ไม่ใช่']))
 
     def exp_text_handler(agent: WebhookClient):
