@@ -1,11 +1,15 @@
 import json
-import urllib3
-import boto3
-from datetime import timedelta, datetime, timezone
 import os
+from datetime import datetime, timedelta, timezone
+
+import boto3
+import urllib3
 
 BUCKET_NAME = os.getenv("BUCKET_NAME")
 TABLE_NAME = os.getenv("TABLE_NAME")
+
+assert BUCKET_NAME is not None
+assert TABLE_NAME is not None
 
 dynamodb_client = boto3.client("dynamodb")
 s3_client = boto3.client("s3")
@@ -20,7 +24,7 @@ def lambda_handler(event, context):
     s3_key = []
 
     for i in range(7):
-        delete_day = (today - timedelta(days=i+1)).strftime("%Y-%m-%d")
+        delete_day = (today - timedelta(days=i + 1)).strftime("%Y-%m-%d")
         dynamodb_response = dynamodb_client.query(
             TableName=TABLE_NAME,
             KeyConditionExpression="expDate = :expDate",

@@ -1,13 +1,19 @@
 import json
-import urllib3
-import boto3
-from datetime import timedelta, datetime, timezone
 import os
+from datetime import datetime, timedelta, timezone
+
+import boto3
+import urllib3
 
 LINE_ACCESS_TOKEN = os.getenv("LINE_ACCESS_TOKEN")
 BUCKET_NAME = os.getenv("BUCKET_NAME")
 BUCKET_REGION = os.getenv("BUCKET_REGION")
 TABLE_NAME = os.getenv("TABLE_NAME")
+
+assert LINE_ACCESS_TOKEN is not None
+assert BUCKET_NAME is not None
+assert BUCKET_REGION is not None
+assert TABLE_NAME is not None
 
 dynamodb_client = boto3.client("dynamodb")
 http = urllib3.PoolManager()
