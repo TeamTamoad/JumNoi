@@ -157,14 +157,15 @@ def lambda_handler(event, context):
             exp_date = detected_dates[0]
         except IndexError:
             exp_date = date.today()
-        exp_date = str(exp_date)
 
         agent.context.set(
             "noteexp-expimage-followup",
             lifespan_count=2,
-            parameters={"expDate": exp_date, "imageId": image_id},
+            parameters={"expDate": str(exp_date), "imageId": image_id},
         )
-        agent.add(f"วันหมดอายุของสินค้าคือวันที่ {exp_date} ใช่หรือไม่")
+        agent.add(
+            f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่"
+        )
         # agent.add(QuickReplies(quick_replies=["ใช่เลย", "ไม่ใช่"]))
 
     def exp_text_handler(agent: WebhookClient):
