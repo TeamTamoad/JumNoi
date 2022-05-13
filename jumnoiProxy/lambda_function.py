@@ -1,15 +1,13 @@
-import base64
-import hashlib
-import hmac
 import json
-
 import urllib3
-from dotenv import dotenv_values
+import base64
+import hmac
+import hashlib
+import os
 
-config = dotenv_values()
-LINE_ACCESS_TOKEN = config["LINE_ACCESS_TOKEN"]
-DIALOGFLOW_URL = config["DIALOGFLOW_URL"]
-CHANNEL_SECRET = config["CHANNEL_SECRET"]
+LINE_ACCESS_TOKEN = os.getenv("LINE_ACCESS_TOKEN")
+DIALOGFLOW_URL = os.getenv("DIALOGFLOW_URL")
+CHANNEL_SECRET = os.getenv("CHANNEL_SECRET")
 
 http = urllib3.PoolManager()
 
@@ -17,12 +15,9 @@ http = urllib3.PoolManager()
 def lambda_handler(event, context):
     headers = event["headers"]
     body = json.loads(event["body"])
-    print(event)
-    # print(body)
 
     message_type = body["events"][0]["message"]["type"]
     if message_type == "text":
-        # body["events"][0]["message"]["text"] = "สวัสดี"
         dialogflow_handler(headers, body)
     elif message_type == "image":
         body["events"][0]["message"]["type"] = "text"
@@ -44,9 +39,6 @@ def dialogflow_handler(headers, body):
     headers["host"] = "dialogflow.cloud.google.com"
     headers.pop("content-length")
     headers["x-line-signature"] = get_signature(to_json(body), CHANNEL_SECRET)
-
-    print(headers)
-    print(body)
 
     http.request(
         "POST",
