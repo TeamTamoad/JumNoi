@@ -8,13 +8,15 @@ from datetime import date
 
 import boto3
 import requests
-from dialogflow_fulfillment import WebhookClient
+from dialogflow_fulfillment import QuickReplies, WebhookClient
 
 LINE_ACCESS_TOKEN = os.getenv("LINE_ACCESS_TOKEN")
 TABLE_NAME = os.getenv("TABLE_NAME")
+BUCKET_NAME = os.getenv("BUCKET_NAME")
 
 assert LINE_ACCESS_TOKEN is not None
 assert TABLE_NAME is not None
+assert BUCKET_NAME is not None
 
 MONTH_NUMBER = {
     month.upper(): idx for (idx, month) in enumerate(calendar.month_abbr)
@@ -63,6 +65,7 @@ def create_date(front: str, middle: str, back: str) -> date:
 
 rekog_client = boto3.client("rekognition")
 dynamo_client = boto3.client("dynamodb")
+s3_client = boto3.client("s3")
 date_regex = get_date_regex()
 
 
@@ -71,14 +74,15 @@ def lambda_handler(event, context):
     print(body)
 
     def save_handler(agent: WebhookClient):
-        product_id = str(agent.parameters["productId"])
+        # print("agent.parameters in save_handler", agent.parameters)
+        # print("body in save_handler", body)
+        # print("agent original requests", agent.original_request)
+        product_id = str(int(agent.parameters["productId"]))
         exp_date = agent.parameters["expDate"]
-        user_id = body["originalDetectIntentRequest"]["payload"]["data"]["source"][
-            "userId"
-        ]
-        # print("product_id", product_id)
-        # print("exp_date", exp_date)
-        # print("user_id", user_id)
+        user_id = agent.original_request["payload"]["data"]["source"]["userId"]
+        print("product_id", product_id)
+        print("exp_date", exp_date)
+        print("user_id", user_id)
 
         item_key = {"expDate": {"S": exp_date}, "userId": {"S": user_id}}
 
@@ -86,6 +90,7 @@ def lambda_handler(event, context):
             TableName=TABLE_NAME,
             Key=item_key,
         )
+        print(f"{get_item_res=}")
         if "Item" in get_item_res:
             res = dynamo_client.update_item(
                 TableName=TABLE_NAME,
@@ -102,8 +107,14 @@ def lambda_handler(event, context):
                     "s3Url": {"SS": [product_id]},
                 },
             )
-        # print("agent.parameters in save_handler", agent.parameters)
-        # print("body in save_handler", body)
+        image_data = requests.get(
+            f"https://api-data.line.me/v2/bot/message/{product_id}/content",
+            headers={"Authorization": f"Bearer {LINE_ACCESS_TOKEN}"},
+        )
+        print("Image size:", len(image_data.content))
+        s3_client.put_object(
+            Bucket=BUCKET_NAME, Key=product_id, Body=image_data.content
+        )
         agent.add(f"บันทึกเรียบร้อย")
 
     def exp_image_handler(agent: WebhookClient):
@@ -140,10 +151,10 @@ def lambda_handler(event, context):
         agent.context.set(
             "noteexp-expimage-followup",
             lifespan_count=2,
-            parameters={"expDate": exp_date},
+            parameters={"expDate": exp_date, "imageId": image_id},
         )
         agent.add(f"วันหมดอายุของสินค้าคือวันที่ {exp_date} ใช่หรือไม่")
-        # agent.add(QuickReplies(quick_replies=['ใช่เลย', 'ไม่ใช่']))
+        # agent.add(QuickReplies(quick_replies=["ใช่เลย", "ไม่ใช่"]))
 
     def exp_text_handler(agent: WebhookClient):
         print(body["queryResult"]["parameters"]["expDate"])
