@@ -41,7 +41,7 @@ def lambda_handler(event, context):
                 }
             )
             s3_key.extend(
-                [{"Key": e.get("S")} for e in item.get("s3Url", {}).get("L", [])]
+                [{"Key": e} for e in item.get("s3Url", {}).get("SS", [])]
             )
 
     for i in range(0, len(s3_key), 1000):
