@@ -5,7 +5,6 @@ import json
 import os
 import re
 from datetime import date
-from typing import List
 
 import boto3
 import requests
@@ -119,7 +118,7 @@ def lambda_handler(event, context):
         image = base64.decodebytes(base64.b64encode(image_data.content))
 
         res = rekog_client.detect_text(Image={"Bytes": image})
-        detected_dates: List[date] = []
+        detected_dates: list[date] = []
         for text in res["TextDetections"]:
             # remove all whitespaces from the testing string
             detected_text = "".join(text["DetectedText"].split())
