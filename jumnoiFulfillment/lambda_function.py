@@ -24,6 +24,15 @@ MONTH_NUMBER = {
 
 
 def get_date_regex() -> re.Pattern[str]:
+    """
+    Return a regex that can detect and capture the components of date.
+
+    Capture group detail:
+        - Group 1: The front part of date. Possible values are 'day', 'month' or 'year'
+        - Group 2: The seperator. Possible values are '/', '-', '.' or empty string
+        - Group 3: The middle part of date. Possible values are 'day' or 'month'
+        - Group 4: The back part of date. Possible values are 'day' or 'year'
+    """
     seperator = r"\/|-|\."
     month_name = "|".join(
         itertools.chain(calendar.month_abbr[1:], calendar.month_name[1:])
@@ -74,6 +83,7 @@ def lambda_handler(event, context):
     print(body)
 
     def save_handler(agent: WebhookClient):
+        """Save item image to S3 and save meta-data to dynamodb"""
         # print("agent.parameters in save_handler", agent.parameters)
         # print("body in save_handler", body)
         # print("agent original requests", agent.original_request)
@@ -118,6 +128,7 @@ def lambda_handler(event, context):
         agent.add(f"บันทึกเรียบร้อย")
 
     def exp_image_handler(agent: WebhookClient):
+        """Detect the exp date from the image"""
         image_id = body["originalDetectIntentRequest"]["payload"]["data"]["message"][
             "id"
         ]
