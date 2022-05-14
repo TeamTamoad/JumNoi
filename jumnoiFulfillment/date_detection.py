@@ -25,7 +25,7 @@ def get_date_regex() -> re.Pattern[str]:
     month_number = r"1[0-2]|0?[1-9]"
     day = r"3[01]|[12][0-9]|0?[1-9]"
     year_front = r"20\d{2}"
-    year_back = r"(?:20)?\d{2}"
+    year_back = r"(?:20|25)?\d{2}"
     return re.compile(
         f"({year_front}|{month_number}|{day})({seperator})?({month_name}|{month_number}|{day})\\2({year_back}|{day})",
         re.IGNORECASE,
@@ -45,11 +45,11 @@ def create_date(front: str, middle: str, back: str) -> date:
     # handle case yyyy/mm/dd
     if day_num > 2000:
         day_num, year_num = year_num, day_num
-        
+
     # handle case buddhist calendar
     if year_num > 2500:
         year_num -= 543
-    elif year_num < 2000 and year_num > 60:
+    elif 60 < year_num < 2000:
         year_num -= 43
 
     # handle case dd/mm/yy
