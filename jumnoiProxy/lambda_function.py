@@ -48,6 +48,7 @@ def lambda_handler(event, context):
 
 
 def dialogflow_handler(headers, body):
+    print(body)
     headers["host"] = "dialogflow.cloud.google.com"
     headers.pop("content-length")
     headers["x-line-signature"] = get_signature(to_json(body), CHANNEL_SECRET)
