@@ -6,7 +6,7 @@ from datetime import date, datetime
 import boto3
 import requests
 from date_detection import create_date, get_date_regex
-from dialogflow_fulfillment import QuickReplies, WebhookClient, Payload
+from dialogflow_fulfillment import Payload, QuickReplies, WebhookClient
 
 LINE_ACCESS_TOKEN = os.getenv("LINE_ACCESS_TOKEN")
 TABLE_NAME = os.getenv("TABLE_NAME")
@@ -95,8 +95,23 @@ def exp_image_handler(agent: WebhookClient):
             detected_dates.append(detected_date)
 
     detected_dates.sort(reverse=True)
+
     try:
         exp_date = detected_dates[0]
+        agent.context.set(
+            "noteexp-expimage-followup",
+            lifespan_count=1,
+            parameters={"expDate": str(exp_date), "imageId": image_id},
+        )
+        agent.add(
+            f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่"
+        )
+        # agent.add(
+        #     QuickReplies(
+        #         title=f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่",
+        #         quick_replies=["ใช่เลย", "ไม่ใช่"],
+        #     )
+        # )
     except IndexError:
         agent.context.set(
             "noteexp-product-followup",
@@ -141,22 +156,6 @@ def exp_image_handler(agent: WebhookClient):
                 }
             )
         )
-        return
-
-    agent.context.set(
-        "noteexp-expimage-followup",
-        lifespan_count=1,
-        parameters={"expDate": str(exp_date), "imageId": image_id},
-    )
-    agent.add(
-        f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่"
-    )
-    # agent.add(
-    #     QuickReplies(
-    #         title=f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่",
-    #         quick_replies=["ใช่เลย", "ไม่ใช่"],
-    #     )
-    # )
 
 
 def exp_text_handler(agent: WebhookClient):
