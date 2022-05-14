@@ -6,18 +6,16 @@
   "conditionalFollowupEvents": [],
   "conditionalResponses": [],
   "context": [
-    "NoteExp-expimage-followup",
-    "NoteExp-product-followup"
+    "NoteExp-expimage-followup"
   ],
   "contexts": [
-    "NoteExp-expimage-followup",
-    "NoteExp-product-followup"
+    "NoteExp-expimage-followup"
   ],
   "endInteraction": false,
   "events": [],
   "fallbackIntent": false,
   "liveAgentHandoff": false,
-  "parentId": "bf69830f-723d-47cb-9c12-0ccf43024010",
+  "parentId": null,
   "followUpIntents": [],
   "priority": 500000,
   "responses": [
@@ -35,7 +33,7 @@
           "isList": false,
           "required": false,
           "prompts": [],
-          "value": "#NoteExp-product-followup.productId",
+          "value": "#note-process.productId",
           "outputDialogContexts": []
         },
         {
@@ -50,19 +48,6 @@
           "prompts": [],
           "value": "#NoteExp-expimage-followup.expDate",
           "outputDialogContexts": []
-        },
-        {
-          "noInputPromptMessages": [],
-          "noMatchPromptMessages": [],
-          "promptMessages": [],
-          "defaultValue": "",
-          "name": "person",
-          "dataType": "@sys.person",
-          "isList": false,
-          "required": false,
-          "prompts": [],
-          "value": "$person",
-          "outputDialogContexts": []
         }
       ],
       "defaultResponsePlatforms": {},
@@ -76,9 +61,61 @@
       "resetContexts": false
     }
   ],
-  "rootParentId": "b3c9f23e-7894-4e94-8dbd-2ad848405af5",
+  "rootParentId": null,
   "templates": [],
   "userSays": [
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "yup",
+          "userDefined": false,
+          "meta": "@sys.ignore",
+          "alias": null
+        }
+      ],
+      "count": 0,
+      "id": "afed123e-23f4-4cee-ada9-460d630651ba",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "yep",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "08ee21ae-5253-49d5-a7d8-2ca97b8ad9fc",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "yeah",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "c2ed5409-2b55-4bdb-9145-cbfd9458e32f",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "yes",
+          "userDefined": false,
+          "meta": "@sys.ignore",
+          "alias": null
+        }
+      ],
+      "count": 0,
+      "id": "e1c8f289-1cd6-4265-be97-f7a9050e6c60",
+      "updated": null
+    },
     {
       "isTemplate": false,
       "data": [
@@ -121,8 +158,8 @@
         {
           "text": "ช่าย",
           "userDefined": false,
-          "alias": "person",
-          "meta": "@sys.person"
+          "meta": "@sys.ignore",
+          "alias": null
         }
       ],
       "count": 0,

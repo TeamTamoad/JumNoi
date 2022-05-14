@@ -1,0 +1,73 @@
+{
+  "id": "f8f9bd03-e489-4040-8547-250e0844a90b",
+  "name": "Get memo - start - custom",
+  "auto": true,
+  "condition": "",
+  "conditionalFollowupEvents": [],
+  "conditionalResponses": [],
+  "context": [
+    "Getmemo-start-followup"
+  ],
+  "contexts": [
+    "Getmemo-start-followup"
+  ],
+  "endInteraction": false,
+  "events": [],
+  "fallbackIntent": false,
+  "liveAgentHandoff": false,
+  "parentId": "246999da-9509-4fe7-bef3-7b7ec2bc1805",
+  "followUpIntents": [],
+  "priority": 500000,
+  "responses": [
+    {
+      "action": "Getmemo-start.Getmemo-start-custom",
+      "affectedContexts": [],
+      "parameters": [
+        {
+          "noInputPromptMessages": [],
+          "noMatchPromptMessages": [],
+          "promptMessages": [],
+          "defaultValue": "",
+          "name": "expDate",
+          "dataType": "@sys.date",
+          "isList": false,
+          "required": false,
+          "prompts": [],
+          "value": "$expDate",
+          "outputDialogContexts": []
+        }
+      ],
+      "defaultResponsePlatforms": {},
+      "messages": [
+        {
+          "type": "message",
+          "condition": "",
+          "speech": [
+            "คุณต้องการดูรายการที่วันหมดอายุตรงกับวันที่ $expDate ใช่ไหมค่ะ"
+          ]
+        }
+      ],
+      "resetContexts": false
+    }
+  ],
+  "rootParentId": "246999da-9509-4fe7-bef3-7b7ec2bc1805",
+  "templates": [],
+  "userSays": [
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "1/1/22",
+          "userDefined": false,
+          "alias": "expDate",
+          "meta": "@sys.date"
+        }
+      ],
+      "count": 1,
+      "id": "d88c2d43-47ae-4c51-ae42-4e0487f1ddb0",
+      "updated": null
+    }
+  ],
+  "webhookForSlotFilling": false,
+  "webhookUsed": true
+}

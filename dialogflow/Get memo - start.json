@@ -1,0 +1,68 @@
+{
+  "id": "246999da-9509-4fe7-bef3-7b7ec2bc1805",
+  "name": "Get memo - start",
+  "auto": true,
+  "condition": "",
+  "conditionalFollowupEvents": [],
+  "conditionalResponses": [],
+  "context": [],
+  "contexts": [],
+  "endInteraction": false,
+  "events": [],
+  "fallbackIntent": false,
+  "liveAgentHandoff": false,
+  "parentId": null,
+  "followUpIntents": [],
+  "priority": 500000,
+  "responses": [
+    {
+      "action": "",
+      "affectedContexts": [
+        {
+          "name": "Getmemo-start-followup",
+          "lifespan": 2
+        }
+      ],
+      "parameters": [],
+      "defaultResponsePlatforms": {},
+      "messages": [
+        {
+          "type": "message",
+          "condition": "",
+          "speech": []
+        }
+      ],
+      "resetContexts": false
+    }
+  ],
+  "rootParentId": null,
+  "templates": [],
+  "userSays": [
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "บอกที",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "943da706-4d37-4d49-b4c9-a7869eba0731",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "บอกหน่อย",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "0ae1bbe1-0b0a-443d-8d08-e993d2007d34",
+      "updated": null
+    }
+  ],
+  "webhookForSlotFilling": false,
+  "webhookUsed": true
+}

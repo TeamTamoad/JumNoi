@@ -59,6 +59,19 @@
           "prompts": [],
           "value": "",
           "outputDialogContexts": []
+        },
+        {
+          "noInputPromptMessages": [],
+          "noMatchPromptMessages": [],
+          "promptMessages": [],
+          "defaultValue": "",
+          "name": "productId",
+          "dataType": "@sys.number",
+          "isList": false,
+          "required": false,
+          "prompts": [],
+          "value": "#note-process.productId",
+          "outputDialogContexts": []
         }
       ],
       "defaultResponsePlatforms": {},

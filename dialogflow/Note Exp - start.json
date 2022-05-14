@@ -20,7 +20,7 @@
       "affectedContexts": [
         {
           "name": "NoteExp-start-followup",
-          "lifespan": 2
+          "lifespan": 1
         },
         {
           "name": "note-process",
@@ -31,11 +31,32 @@
       "defaultResponsePlatforms": {},
       "messages": [
         {
-          "type": "message",
+          "type": "custom_payload",
           "condition": "",
-          "speech": [
-            "กรุณาส่งรูปสินค้าที่ต้องการบันทึก"
-          ]
+          "payload": {
+            "line": {
+              "text": "กรุณาส่งรูปสินค้าที่ต้องการบันทึก",
+              "quickReply": {
+                "items": [
+                  {
+                    "type": "action",
+                    "action": {
+                      "type": "camera",
+                      "label": "ถ่ายรูป"
+                    }
+                  },
+                  {
+                    "type": "action",
+                    "action": {
+                      "type": "cameraRoll",
+                      "label": "เลือกรูป"
+                    }
+                  }
+                ]
+              },
+              "type": "text"
+            }
+          }
         }
       ],
       "resetContexts": false
@@ -44,6 +65,42 @@
   "rootParentId": null,
   "templates": [],
   "userSays": [
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "จดจำ",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "7e1e8d60-6ed1-4ce5-9adb-8ea9fa5e1b77",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "บันทึกข้อมูล",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "dc7b2e11-9f72-48ae-833f-96732d566cac",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "บันทึก",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "995b4479-daf8-4102-bb79-405ee62b4fc7",
+      "updated": null
+    },
     {
       "isTemplate": false,
       "data": [
