@@ -163,7 +163,7 @@ def exp_text_handler(agent: WebhookClient):
     # print(f"text original {agent.original_request}")
     # print(f"text parameter {agent.parameters}")
     # print(agent.query)
-    exp_date = datetime.strptime(agent.parameters["expDate"], "%Y-%m-%dT%H:%M:%S%z")
+    exp_date = datetime.fromisoformat(agent.parameters["expDate"]).date()
     agent.context.set(
         "noteexp-expimage-followup",
         lifespan_count=1,
