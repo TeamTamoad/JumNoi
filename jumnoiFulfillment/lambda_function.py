@@ -1,7 +1,7 @@
 import base64
 import json
 import os
-from datetime import date
+from datetime import date, datetime
 
 import boto3
 import requests
@@ -42,7 +42,7 @@ def save_handler(agent: WebhookClient):
         TableName=TABLE_NAME,
         Key=item_key,
     )
-    print(f"{get_item_res=}")
+    print(f"{get_item_res}")
     if "Item" in get_item_res:
         res = dynamo_client.update_item(
             TableName=TABLE_NAME,
@@ -73,7 +73,7 @@ def exp_image_handler(agent: WebhookClient):
     print("Exp image handler")
 
     image_id = agent.original_request["payload"]["data"]["message"]["id"]
-    print(f"{image_id=}")
+    print(f"{image_id}")
     image_data = requests.get(
         f"https://api-data.line.me/v2/bot/message/{image_id}/content",
         headers={"Authorization": f"Bearer {LINE_ACCESS_TOKEN}"},
@@ -98,31 +98,53 @@ def exp_image_handler(agent: WebhookClient):
     try:
         exp_date = detected_dates[0]
     except IndexError:
-        exp_date = date.today()
+        agent.context.set(
+            "noteexp-product-followup",
+            lifespan_count=1,
+        )
+        agent.context.set(
+            "note-process",
+            lifespan_count=1,
+        )
+        agent.add("ไม่พบวันหมดอายุในรูป กรุณาส่งรูปหรือข้อความแสดงวันหมดอายุอีกครั้ง")
+        return
 
     agent.context.set(
         "noteexp-expimage-followup",
-        lifespan_count=2,
+        lifespan_count=1,
         parameters={"expDate": str(exp_date), "imageId": image_id},
     )
+    # agent.add(
+    #     f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่"
+    # )
     agent.add(
-        f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่"
+        QuickReplies(
+            title=f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่",
+            quick_replies=["ใช่เลย", "ไม่ใช่"],
+        )
     )
-    # agent.add(QuickReplies(quick_replies=["ใช่เลย", "ไม่ใช่"]))
 
 
 def exp_text_handler(agent: WebhookClient):
     print("Exp text handler")
-    # print(f"{agent.original_request=}")
-    # print(f"{agent.parameters=}")
-    exp_date = agent.parameters["expDate"]
+    # print(f"text original {agent.original_request}")
+    # print(f"text parameter {agent.parameters}")
+    # print(agent.query)
+    exp_date = datetime.strptime(agent.parameters["expDate"], "%Y-%m-%dT%H:%M:%S%z")
     agent.context.set(
         "noteexp-expimage-followup",
-        lifespan_count=2,
-        parameters={"expDate": exp_date},
+        lifespan_count=1,
+        parameters={"expDate": str(exp_date)},
     )
-    agent.add(f"วันหมดอายุของสินค้าคือวันที่ {exp_date} ใช่หรือไม่")
-    # agent.add(QuickReplies(quick_replies=['ใช่เลย', 'ไม่ใช่']))
+    # agent.add(
+    #     f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่"
+    # )
+    agent.add(
+        QuickReplies(
+            title=f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่",
+            quick_replies=["ใช่เลย", "ไม่ใช่"],
+        )
+    )
 
 
 handler = {
