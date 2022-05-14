@@ -11,6 +11,7 @@ import boto3
 import requests
 from date_detection import create_date, get_date_regex
 from dialogflow_fulfillment import Payload, QuickReplies, WebhookClient
+from dotenv import dotenv_values
 
 
 config = dotenv_values()
@@ -306,74 +307,7 @@ def lambda_handler(event, context):
         
         # agent.add(f"รายการที่หมดอายุในวันที่ {expDate} มีดังนี้")
     
-    def getMemo_handler(agent: WebhookClient):
-        userId = body["originalDetectIntentRequest"]["payload"]["data"]["source"]["userId"]
-        
-        payload = {
-                    "type": "flex",
-                    "altText": "This is a Flex Message",
-                    "contents": {
-                        "type": "bubble",
-                        "hero": {
-                            "type": "image",
-                            "size": "full",
-                            "aspectRatio": "20:13",
-                            "aspectMode": "cover",
-                            "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_5_carousel.png"
-                        },
-                        "body": {
-                            "type": "box",
-                            "layout": "vertical",
-                            "spacing": "sm",
-                            "contents": [{
-                                            "type": "text",
-                                            "text": "กรุณาเลือกวันที่",
-                                            "wrap": True,
-                                            "weight": "regular",
-                                            "size": "xl"
-                                        },
-                                        {
-                                            "type": "box",
-                                            "layout": "baseline",
-                                            "contents": [{
-                                                        "type": "text",
-                                                        "text": "เลือกวันเพื่อแสดงรายการสินค้าที่มีวันหมดอายุภายในวันที่เลือก",
-                                                        "wrap": True,
-                                                        "weight": "regular",
-                                                        "flex": 0
-                                                        }]
-                                        }]
-                            },
-                            "footer": {
-                                    "type": "box",
-                                    "layout": "vertical",
-                                    "spacing": "sm",
-                                    "contents": [
-                                      {
-                                        "type": "button",
-                                        "style": "primary",
-                                        "action": {
-                                          "type": "datetimepicker",
-                                          "label": "เลือกวัน",
-                                          "data": "เลือกวัน",
-                                          "mode": "date"
-                                        }
-                                      },
-                                      {
-                                        "type": "button",
-                                        "action": {
-                                          "type": "postback",
-                                          "label": "ยกเลิก",
-                                          "data": "ยกเลิก"
-                                        }
-                                      }
-                                    ]
-                                  }
-                        }
-                    }
-        
-                       
-        push_message(userId, payload)
+
 
     agent = WebhookClient(body)
 
@@ -383,8 +317,6 @@ def lambda_handler(event, context):
         "Note Exp - exp image - yes": save_handler,
         
         "Get memo - start - custom" : getMemoCustom_handler,
-        "Get memo - start": getMemo_handler
-
     }
 
 
