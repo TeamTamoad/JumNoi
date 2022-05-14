@@ -268,7 +268,7 @@ def lambda_handler(event, context):
         
         
         for item in dynamodb_response.get("Items", []):
-            s3_url = [e.get("S") for e in item.get("s3Url", {}).get("L", [])]
+            s3_url = [e for e in item.get("s3Url", {}).get("SS", [])]
     
             msg = {
                 "type": "text",
