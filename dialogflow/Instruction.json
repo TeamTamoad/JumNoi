@@ -1,0 +1,89 @@
+{
+  "id": "b0e222f8-6a88-46dd-8a61-b0534bc18037",
+  "name": "Instruction",
+  "auto": true,
+  "condition": "",
+  "conditionalFollowupEvents": [],
+  "conditionalResponses": [],
+  "context": [],
+  "contexts": [],
+  "endInteraction": false,
+  "events": [],
+  "fallbackIntent": false,
+  "liveAgentHandoff": false,
+  "parentId": null,
+  "followUpIntents": [],
+  "priority": 500000,
+  "responses": [
+    {
+      "action": "",
+      "affectedContexts": [],
+      "parameters": [],
+      "defaultResponsePlatforms": {},
+      "messages": [
+        {
+          "type": "message",
+          "condition": "",
+          "speech": [
+            "วิธีใช้\n- พิมพ์ข้อความ \"วิธีใช้\" เพื่อแสดงวิธีใช้\n- พิมพ์ข้อความ \"จำหน่อย\" เพื่อเริ่มการบันทึกวันหมดอายุ หากต้องการยกเลิกการบันทึกให้พิมพ์ข้อความ \"ยกเลิก\"\n- พิมพ์ข้อความ \"บอกหน่อย\" เพื่อขอดูรายการสินค้า\n- ทุกวัน เวลา 18:00 น. ระบบจะทำการเตือนหากมีสินค้ากำลังจะหมดอายุในวันรุ่งขึ้น"
+          ]
+        }
+      ],
+      "resetContexts": false
+    }
+  ],
+  "rootParentId": null,
+  "templates": [],
+  "userSays": [
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "คู่มือ",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "9b18aeb1-e2d8-42d4-ace0-0a2a38b37c49",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "วิธี",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "16ad3eb2-d701-4008-a7cd-598289554c2c",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "ใช้ยังไง",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "493e6796-679a-4eb1-9e7c-530f848e22a5",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "วิธีใช้",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "a3fb4575-fdfe-46a7-9a8f-60835d1b8e42",
+      "updated": null
+    }
+  ],
+  "webhookForSlotFilling": false,
+  "webhookUsed": false
+}

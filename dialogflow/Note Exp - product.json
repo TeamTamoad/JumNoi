@@ -24,15 +24,11 @@
       "affectedContexts": [
         {
           "name": "NoteExp-product-followup",
-          "lifespan": 2
+          "lifespan": 1
         },
         {
           "name": "note-process",
           "lifespan": 1
-        },
-        {
-          "name": "NoteExp-product-followup-2",
-          "lifespan": 2
         }
       ],
       "parameters": [
@@ -55,11 +51,41 @@
       "defaultResponsePlatforms": {},
       "messages": [
         {
-          "type": "message",
+          "type": "custom_payload",
           "condition": "",
-          "speech": [
-            "กรุณาส่งรูปหรือข้อความแสดงวันหมดอายุของสินค้า"
-          ]
+          "payload": {
+            "line": {
+              "quickReply": {
+                "items": [
+                  {
+                    "type": "action",
+                    "action": {
+                      "type": "camera",
+                      "label": "ถ่ายรูป"
+                    }
+                  },
+                  {
+                    "type": "action",
+                    "action": {
+                      "label": "เลือกรูป",
+                      "type": "cameraRoll"
+                    }
+                  },
+                  {
+                    "type": "action",
+                    "action": {
+                      "label": "เลือกวัน",
+                      "mode": "date",
+                      "data": "date",
+                      "type": "datetimepicker"
+                    }
+                  }
+                ]
+              },
+              "type": "text",
+              "text": "กรุณาส่งรูปหรือข้อความแสดงวันหมดอายุของสินค้า"
+            }
+          }
         }
       ],
       "resetContexts": false

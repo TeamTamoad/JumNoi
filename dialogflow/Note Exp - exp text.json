@@ -24,7 +24,7 @@
       "affectedContexts": [
         {
           "name": "NoteExp-expimage-followup",
-          "lifespan": 2
+          "lifespan": 1
         },
         {
           "name": "note-process",
@@ -40,44 +40,35 @@
           "name": "expDate",
           "dataType": "@sys.date",
           "isList": false,
+          "required": true,
+          "prompts": [
+            "ไม่พบข้อความแสดงวันหมดอายุ กรุณาส่งอีกครั้งในรูปแบบ dd/mm/yy"
+          ],
+          "value": "$expDate",
+          "outputDialogContexts": []
+        },
+        {
+          "noInputPromptMessages": [],
+          "noMatchPromptMessages": [],
+          "promptMessages": [],
+          "defaultValue": "",
+          "name": "productId",
+          "dataType": "@sys.number-integer",
+          "isList": false,
           "required": false,
           "prompts": [],
-          "value": "$expDate",
+          "value": "#note-process.productId",
           "outputDialogContexts": []
         }
       ],
       "defaultResponsePlatforms": {},
-      "messages": [
-        {
-          "type": "message",
-          "condition": "",
-          "speech": []
-        }
-      ],
+      "messages": [],
       "resetContexts": false
     }
   ],
   "rootParentId": null,
   "templates": [],
   "userSays": [
-    {
-      "isTemplate": false,
-      "data": [
-        {
-          "text": "ขอดูสินค้าที่วันหมดอายุตรงกับวันที่ ",
-          "userDefined": false
-        },
-        {
-          "text": "1/1/22",
-          "userDefined": false,
-          "alias": "expDate",
-          "meta": "@sys.date"
-        }
-      ],
-      "count": 0,
-      "id": "d072d931-a364-44fa-b44e-24e7948be0e4",
-      "updated": null
-    },
     {
       "isTemplate": false,
       "data": [

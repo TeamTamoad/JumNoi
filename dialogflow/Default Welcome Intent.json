@@ -1,18 +1,18 @@
 {
-  "id": "c1ebd5eb-2bca-430c-802c-2a194c2c7352",
-  "name": "Note Exp - cancel",
+  "id": "1f619993-8ee5-4c91-b269-d87fc84e0ff2",
+  "name": "Default Welcome Intent",
   "auto": true,
   "condition": "",
   "conditionalFollowupEvents": [],
   "conditionalResponses": [],
-  "context": [
-    "note-process"
-  ],
-  "contexts": [
-    "note-process"
-  ],
+  "context": [],
+  "contexts": [],
   "endInteraction": false,
-  "events": [],
+  "events": [
+    {
+      "name": "WELCOME"
+    }
+  ],
   "fallbackIntent": false,
   "liveAgentHandoff": false,
   "parentId": null,
@@ -20,7 +20,7 @@
   "priority": 500000,
   "responses": [
     {
-      "action": "NoteExp-start.NoteExp-start-cancel",
+      "action": "input.welcome",
       "affectedContexts": [],
       "parameters": [],
       "defaultResponsePlatforms": {},
@@ -29,7 +29,9 @@
           "type": "message",
           "condition": "",
           "speech": [
-            "ยกเลิกการบันทึก"
+            "สวัสดีจ้า",
+            "ทักทาย ๆ",
+            "ขอให้วันนี้เป็นวันที่ดี"
           ]
         }
       ],
@@ -43,120 +45,108 @@
       "isTemplate": false,
       "data": [
         {
-          "text": "ไม่ต้องแล้ว",
+          "text": "สวัสดี",
           "userDefined": false
         }
       ],
       "count": 0,
-      "id": "404d3deb-a252-4b06-90bd-bf5cb347e375",
+      "id": "23020f0e-a7fc-4c67-8028-adff321503b9",
       "updated": null
     },
     {
       "isTemplate": false,
       "data": [
         {
-          "text": "หยุด",
+          "text": "หวัดดีจ้ะ",
           "userDefined": false
         }
       ],
       "count": 0,
-      "id": "533a38d1-b785-4ca7-bb2b-d20374550891",
+      "id": "6c5b7aeb-5aeb-435f-ba73-12eeccc763b7",
       "updated": null
     },
     {
       "isTemplate": false,
       "data": [
         {
-          "text": "เลิกทำ",
+          "text": "สวัสดีน้า",
           "userDefined": false
         }
       ],
-      "count": 1,
-      "id": "48518e1f-ffd4-48b8-8115-a28e659b10a6",
+      "count": 0,
+      "id": "1919f685-605c-48e2-9bd9-85666b52ec25",
       "updated": null
     },
     {
       "isTemplate": false,
       "data": [
         {
-          "text": "ข้าม",
+          "text": "ว่าไง",
           "userDefined": false
         }
       ],
       "count": 0,
-      "id": "a947927b-8e33-4ec4-b952-26b423bd2f30",
+      "id": "79f7106c-ff27-460c-96c9-e970af110b0c",
       "updated": null
     },
     {
       "isTemplate": false,
       "data": [
         {
-          "text": "ปิด",
+          "text": "สวีดัส",
           "userDefined": false
         }
       ],
       "count": 0,
-      "id": "2dabde39-cdbd-4e70-af01-663107e16c42",
+      "id": "23871a80-4f66-4223-a124-1811e645d01e",
       "updated": null
     },
     {
       "isTemplate": false,
       "data": [
         {
-          "text": "ไม่เอาแล้ว",
+          "text": "สวัสดีจ้ะ",
           "userDefined": false
         }
       ],
       "count": 0,
-      "id": "a92da662-3e9f-430b-9f69-9a4b19dd9a62",
+      "id": "34ee6cc3-7bba-4b46-ba58-5df12858916b",
       "updated": null
     },
     {
       "isTemplate": false,
       "data": [
         {
-          "text": "ไม่เป็นไร",
+          "text": "หวัดดีจ้า",
           "userDefined": false
         }
       ],
       "count": 0,
-      "id": "78c8f027-658b-4d0e-a235-2d0114d87ccf",
+      "id": "93d2b500-0538-46cf-b541-a15569f6f9bb",
       "updated": null
     },
     {
       "isTemplate": false,
       "data": [
         {
-          "text": "ยกเลิก",
+          "text": "ขอทักทาย",
           "userDefined": false
         }
       ],
       "count": 0,
-      "id": "b3cc3db4-fde4-424d-a88b-c1ba9db74142",
+      "id": "c36ed32a-5f92-4859-bf77-9da59adeaf2a",
       "updated": null
     },
     {
       "isTemplate": false,
       "data": [
         {
-          "text": "ล้มเลิก",
+          "text": "หวัดดี",
           "userDefined": false
         }
       ],
       "count": 0,
-      "id": "36f807e3-1fb5-4024-a09f-772125fe6e37",
-      "updated": null
-    },
-    {
-      "isTemplate": false,
-      "data": [
-        {
-          "text": "หยุดให้หน่อย",
-          "userDefined": false
-        }
-      ],
-      "count": 0,
-      "id": "41e4368e-9138-4b56-9654-659304838000",
+      "id": "2fcda5a7-170c-4369-b751-df19743b885f",
       "updated": null
     }
   ],
