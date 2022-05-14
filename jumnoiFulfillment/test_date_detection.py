@@ -23,11 +23,14 @@ class TestDetectExpDate(unittest.TestCase):
         self.assertIsNone(self.detect_date(input))
 
     def test_no_seperator(self):
-        self.assert_not_detect_date("11122122")
         self.assert_not_detect_date("20asdf22")
 
     def test_basic(self):
         self.assert_detect_date("15/12/2022", day=15, month=12, year=2022)
+        self.assert_detect_date("28/07/19", day=28, month=7, year=2019)
+        self.assert_detect_date("2023-08-11", day=11, month=8, year=2023)
+        self.assert_detect_date("9Jan2020", day=9, month=1, year=2020)
+        self.assert_detect_date("20221220", day=20, month=12, year=2022)
 
     def test_not_detect_date(self):
         self.assert_not_detect_date("asd23423")
