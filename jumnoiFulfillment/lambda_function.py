@@ -6,7 +6,7 @@ from datetime import date, datetime
 import boto3
 import requests
 from date_detection import create_date, get_date_regex
-from dialogflow_fulfillment import QuickReplies, WebhookClient
+from dialogflow_fulfillment import QuickReplies, WebhookClient, Payload
 
 LINE_ACCESS_TOKEN = os.getenv("LINE_ACCESS_TOKEN")
 TABLE_NAME = os.getenv("TABLE_NAME")
@@ -106,7 +106,41 @@ def exp_image_handler(agent: WebhookClient):
             "note-process",
             lifespan_count=1,
         )
-        agent.add("ไม่พบวันหมดอายุในรูป กรุณาส่งรูปหรือข้อความแสดงวันหมดอายุอีกครั้ง")
+        # agent.add("ไม่พบวันหมดอายุในรูป กรุณาส่งรูปหรือข้อความแสดงวันหมดอายุอีกครั้ง")
+        agent.add(
+            Payload(
+                {
+                    "line": {
+                        "type": "text",
+                        "text": "ไม่พบวันหมดอายุในรูป กรุณาส่งรูปหรือข้อความแสดงวันหมดอายุอีกครั้ง",
+                        "quickReply": {
+                            "items": [
+                                {
+                                    "action": {"type": "camera", "label": "ถ่ายรูป"},
+                                    "type": "action",
+                                },
+                                {
+                                    "action": {
+                                        "type": "cameraRoll",
+                                        "label": "เลือกรูป",
+                                    },
+                                    "type": "action",
+                                },
+                                {
+                                    "action": {
+                                        "type": "datetimepicker",
+                                        "data": "date",
+                                        "label": "เลือกวัน",
+                                        "mode": "date",
+                                    },
+                                    "type": "action",
+                                },
+                            ]
+                        },
+                    }
+                }
+            )
+        )
         return
 
     agent.context.set(
@@ -114,15 +148,15 @@ def exp_image_handler(agent: WebhookClient):
         lifespan_count=1,
         parameters={"expDate": str(exp_date), "imageId": image_id},
     )
-    # agent.add(
-    #     f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่"
-    # )
     agent.add(
-        QuickReplies(
-            title=f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่",
-            quick_replies=["ใช่เลย", "ไม่ใช่"],
-        )
+        f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่"
     )
+    # agent.add(
+    #     QuickReplies(
+    #         title=f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่",
+    #         quick_replies=["ใช่เลย", "ไม่ใช่"],
+    #     )
+    # )
 
 
 def exp_text_handler(agent: WebhookClient):
@@ -136,15 +170,15 @@ def exp_text_handler(agent: WebhookClient):
         lifespan_count=1,
         parameters={"expDate": str(exp_date)},
     )
-    # agent.add(
-    #     f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่"
-    # )
     agent.add(
-        QuickReplies(
-            title=f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่",
-            quick_replies=["ใช่เลย", "ไม่ใช่"],
-        )
+        f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่"
     )
+    # agent.add(
+    #     QuickReplies(
+    #         title=f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่",
+    #         quick_replies=["ใช่เลย", "ไม่ใช่"],
+    #     )
+    # )
 
 
 handler = {
