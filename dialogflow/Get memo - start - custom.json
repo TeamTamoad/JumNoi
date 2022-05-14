@@ -57,6 +57,20 @@
       "isTemplate": false,
       "data": [
         {
+          "text": "2022-05-11",
+          "userDefined": false,
+          "alias": "expDate",
+          "meta": "@sys.date"
+        }
+      ],
+      "count": 0,
+      "id": "263c6912-948b-49f3-b743-5af2aaa353d7",
+      "updated": null
+    },
+    {
+      "isTemplate": false,
+      "data": [
+        {
           "text": "1/1/22",
           "userDefined": false,
           "alias": "expDate",

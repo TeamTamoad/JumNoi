@@ -27,9 +27,75 @@
       "defaultResponsePlatforms": {},
       "messages": [
         {
-          "type": "message",
+          "type": "custom_payload",
           "condition": "",
-          "speech": []
+          "payload": {
+            "line": {
+              "contents": {
+                "hero": {
+                  "aspectRatio": "20:13",
+                  "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_5_carousel.png",
+                  "size": "full",
+                  "type": "image",
+                  "aspectMode": "cover"
+                },
+                "type": "bubble",
+                "body": {
+                  "layout": "vertical",
+                  "spacing": "sm",
+                  "contents": [
+                    {
+                      "wrap": true,
+                      "size": "xl",
+                      "type": "text",
+                      "weight": "regular",
+                      "text": "กรุณาเลือกวันที่"
+                    },
+                    {
+                      "layout": "baseline",
+                      "type": "box",
+                      "contents": [
+                        {
+                          "type": "text",
+                          "wrap": true,
+                          "text": "เลือกวันเพื่อแสดงรายการสินค้าที่มีวันหมดอายุตรงกับวันที่เลือก",
+                          "weight": "regular"
+                        }
+                      ]
+                    }
+                  ],
+                  "type": "box"
+                },
+                "footer": {
+                  "type": "box",
+                  "contents": [
+                    {
+                      "action": {
+                        "label": "เลือกวัน",
+                        "data": "date",
+                        "type": "datetimepicker",
+                        "mode": "date"
+                      },
+                      "type": "button",
+                      "style": "primary"
+                    },
+                    {
+                      "type": "button",
+                      "action": {
+                        "type": "postback",
+                        "data": "ยกเลิก",
+                        "label": "ยกเลิก"
+                      }
+                    }
+                  ],
+                  "spacing": "sm",
+                  "layout": "vertical"
+                }
+              },
+              "altText": "Flex Message",
+              "type": "flex"
+            }
+          }
         }
       ],
       "resetContexts": false
@@ -64,5 +130,5 @@
     }
   ],
   "webhookForSlotFilling": false,
-  "webhookUsed": true
+  "webhookUsed": false
 }
