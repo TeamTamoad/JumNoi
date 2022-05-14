@@ -45,6 +45,12 @@ def create_date(front: str, middle: str, back: str) -> date:
     # handle case yyyy/mm/dd
     if day_num > 2000:
         day_num, year_num = year_num, day_num
+        
+    # handle case buddhist calendar
+    if year_num > 2500:
+        year_num -= 543
+    elif year_num < 2000 and year_num > 60:
+        year_num -= 43
 
     # handle case dd/mm/yy
     if year_num < 2000:

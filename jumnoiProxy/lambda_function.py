@@ -15,27 +15,40 @@ http = urllib3.PoolManager()
 def lambda_handler(event, context):
     headers = event["headers"]
     body = json.loads(event["body"])
-
-    message_type = body["events"][0]["message"]["type"]
-    if message_type == "text":
-        dialogflow_handler(headers, body)
-    elif message_type == "image":
-        body["events"][0]["message"]["type"] = "text"
-        body["events"][0]["message"]["text"] = body["events"][0]["message"]["id"]
+    print(body)
+    if body["events"][0]["type"] == "postback":
+        body["events"] = body["events"][0:1]
+        event_data = body["events"][0]["postback"]
+        body["events"][0]["type"] = "message"
+        body["events"][0]["message"] = {
+            "type": "text",
+            "text": event_data["params"]["date"]
+            if event_data["data"] == "date"
+            else event_data["data"],
+        }
         dialogflow_handler(headers, body)
     else:
-        reply(
-            body["events"][0]["replyToken"],
-            {
-                "type": "text",
-                "text": f"ไม่เข้าใจข้อความประเภท {message_type}",
-            },
-        )
+        message_type = body["events"][0]["message"]["type"]
+        if message_type == "text":
+            dialogflow_handler(headers, body)
+        elif message_type == "image":
+            body["events"][0]["message"]["type"] = "text"
+            body["events"][0]["message"]["text"] = body["events"][0]["message"]["id"]
+            dialogflow_handler(headers, body)
+        else:
+            reply(
+                body["events"][0]["replyToken"],
+                {
+                    "type": "text",
+                    "text": f"ไม่เข้าใจข้อความประเภท {message_type}",
+                },
+            )
 
     return {"statusCode": 200, "body": json.dumps("Done!")}
 
 
 def dialogflow_handler(headers, body):
+    print(body)
     headers["host"] = "dialogflow.cloud.google.com"
     headers.pop("content-length")
     headers["x-line-signature"] = get_signature(to_json(body), CHANNEL_SECRET)
