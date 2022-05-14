@@ -2,6 +2,7 @@ import calendar
 import itertools
 import re
 from datetime import date
+from typing import Optional
 
 MONTH_NUMBER = {
     month.upper(): idx for (idx, month) in enumerate(calendar.month_abbr)
@@ -32,7 +33,7 @@ def get_date_regex() -> re.Pattern[str]:
     )
 
 
-def create_date(front: str, middle: str, back: str) -> date:
+def create_date(front: str, middle: str, back: str) -> Optional[date]:
     """Create a date object from the given 3 parts"""
     try:
         month_num = int(middle)
@@ -60,4 +61,7 @@ def create_date(front: str, middle: str, back: str) -> date:
     if month_num > 12:
         day_num, month_num = month_num, day_num
 
-    return date(day=day_num, month=month_num, year=year_num)
+    try:
+        return date(day=day_num, month=month_num, year=year_num)
+    except ValueError:
+        return None

@@ -29,6 +29,11 @@ class TestDetectExpDate(unittest.TestCase):
     def test_basic(self):
         self.assert_detect_date("15/12/2022", day=15, month=12, year=2022)
 
+    def test_not_detect_date(self):
+        self.assert_not_detect_date("asd23423")
+        self.assert_not_detect_date("15-15-2022")
+        self.assert_not_detect_date("9-12/2023")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -92,7 +92,8 @@ def exp_image_handler(agent: WebhookClient):
             detected_date = create_date(
                 capture_groups[0], capture_groups[2], capture_groups[3]
             )
-            detected_dates.append(detected_date)
+            if detected_date is not None:
+                detected_dates.append(detected_date)
 
     detected_dates.sort(reverse=True)
 
