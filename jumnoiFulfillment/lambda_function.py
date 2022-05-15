@@ -226,59 +226,60 @@ def get_memo_custom_handler(agent: WebhookClient):
     exp_date = datetime.fromisoformat(agent.parameters["expDate"]).date()
     user_id = agent.original_request["payload"]["data"]["source"]["userId"]
 
-    dynamodb_response = dynamodb_client.query(
+    dynamodb_response = dynamodb_client.scan(
         TableName=TABLE_NAME,
-        KeyConditionExpression="userId = :userId AND expDate = :expDate",
+        FilterExpression="userId = :userId AND expDate <= :expDate",
         ExpressionAttributeValues={
             ":userId": {"S": user_id},
             ":expDate": {"S": str(exp_date)},
         },
     )
 
-    if len(dynamodb_response.get("Items", [])) == 0:
+    items = dynamodb_response.get("Items", [])
+    all_s3_url = [url for item in items for url in item["s3Url"]["SS"]]
+
+    if len(all_s3_url) == 0:
         msg = {
             "type": "text",
             "text": f"คุณไม่มีสินค้าที่กำลังจะหมดอายุในวันที่ {exp_date.strftime('%d %B %Y')} ค่ะ",
         }
         push_message(user_id, msg)
+        return
 
-    for item in dynamodb_response.get("Items", []):
-        s3_url = [e for e in item.get("s3Url", {}).get("SS", [])]
+    msg = {
+        "type": "text",
+        "text": f"คุณมีสินค้าที่กำลังจะหมดอายุในวันที่ {exp_date.strftime('%d %B %Y')} จำนวน {len(all_s3_url)} รายการ",
+    }
+    push_message(user_id, msg)
 
+    # each carousel message can contain no more than 12 images
+    for i in range(0, len(all_s3_url), 12):
         msg = {
-            "type": "text",
-            "text": f"คุณมีสินค้าที่กำลังจะหมดอายุในวันที่ {exp_date.strftime('%d %B %Y')} จำนวน {len(s3_url)} รายการ",
+            "type": "flex",
+            "altText": "รายการสินค้าใกล้หมดอายุ",
+            "contents": {
+                "type": "carousel",
+                "contents": [
+                    {
+                        "type": "bubble",
+                        "body": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "image",
+                                    "url": f"https://{BUCKET_NAME}.s3.{BUCKET_REGION}.amazonaws.com/{url}",
+                                    "size": "full",
+                                }
+                            ],
+                            "paddingAll": "0px",
+                        },
+                    }
+                    for url in all_s3_url[i : i + 12]
+                ],
+            },
         }
         push_message(user_id, msg)
-
-        # each carousel message can contain no more than 12 images
-        for i in range(0, len(s3_url), 12):
-            msg = {
-                "type": "flex",
-                "altText": "รายการสินค้าใกล้หมดอายุ",
-                "contents": {
-                    "type": "carousel",
-                    "contents": [
-                        {
-                            "type": "bubble",
-                            "body": {
-                                "type": "box",
-                                "layout": "vertical",
-                                "contents": [
-                                    {
-                                        "type": "image",
-                                        "url": f"https://{BUCKET_NAME}.s3.{BUCKET_REGION}.amazonaws.com/{url}",
-                                        "size": "full",
-                                    }
-                                ],
-                                "paddingAll": "0px",
-                            },
-                        }
-                        for url in s3_url[i : i + 12]
-                    ],
-                },
-            }
-            push_message(user_id, msg)
 
 
 def lambda_handler(event, context):
