@@ -19,7 +19,7 @@ def get_date_regex() -> re.Pattern[str]:
         - Group 3: The middle part of date. Possible values are 'day' or 'month'
         - Group 4: The back part of date. Possible values are 'day' or 'year'
     """
-    seperator = r"\/|-|\."
+    seperator = r"\/|-|\.|[ ]*"
     month_name = "|".join(
         itertools.chain(calendar.month_abbr[1:], calendar.month_name[1:])
     )
@@ -28,7 +28,7 @@ def get_date_regex() -> re.Pattern[str]:
     year_front = r"20\d{2}"
     year_back = r"(?:20|25)?\d{2}"
     return re.compile(
-        f"({year_front}|{month_number}|{day})({seperator})?({month_name}|{month_number}|{day})\\2({year_back}|{day})",
+        rf"({year_front}|{month_number}|{day})({seperator})({month_name}|{month_number}|{day})\2({year_back}|{day})",
         re.IGNORECASE,
     )
 
