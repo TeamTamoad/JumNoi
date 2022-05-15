@@ -236,9 +236,9 @@ def get_memo_custom_handler(agent: WebhookClient):
     )
     
     items = dynamodb_response.get("Items", [])
-    all_s3_url = [url for item in items for url in item["s3Url"]["SS"]]
+    all_data = [(url, item["expDate"]) for item in items for url in item["s3Url"]["SS"]]
 
-    if len(all_s3_url) == 0:
+    if len(all_data) == 0:
         msg = {
             "type": "text",
             "text": f"คุณไม่มีสินค้าที่กำลังจะหมดอายุในวันที่ {exp_date.strftime('%d %B %Y')} ค่ะ",
@@ -248,7 +248,7 @@ def get_memo_custom_handler(agent: WebhookClient):
     
     msg = {
         "type": "text",
-        "text": f"คุณมีสินค้าที่กำลังจะหมดอายุในวันที่ {exp_date.strftime('%d %B %Y')} จำนวน {len(all_s3_url)} รายการ",
+        "text": f"คุณมีสินค้าที่กำลังจะหมดอายุในวันที่ {exp_date.strftime('%d %B %Y')} จำนวน {len(all_data)} รายการ",
     }
     push_message(user_id, msg)
 
