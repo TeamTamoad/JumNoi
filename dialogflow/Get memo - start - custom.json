@@ -38,21 +38,27 @@
         }
       ],
       "defaultResponsePlatforms": {},
-      "messages": [
-        {
-          "type": "message",
-          "condition": "",
-          "speech": [
-            "คุณต้องการดูรายการที่วันหมดอายุตรงกับวันที่ $expDate ใช่ไหมค่ะ"
-          ]
-        }
-      ],
+      "messages": [],
       "resetContexts": false
     }
   ],
   "rootParentId": "246999da-9509-4fe7-bef3-7b7ec2bc1805",
   "templates": [],
   "userSays": [
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "2022-05-11",
+          "userDefined": false,
+          "alias": "expDate",
+          "meta": "@sys.date"
+        }
+      ],
+      "count": 0,
+      "id": "263c6912-948b-49f3-b743-5af2aaa353d7",
+      "updated": null
+    },
     {
       "isTemplate": false,
       "data": [

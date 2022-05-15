@@ -27,9 +27,75 @@
       "defaultResponsePlatforms": {},
       "messages": [
         {
-          "type": "message",
+          "type": "custom_payload",
           "condition": "",
-          "speech": []
+          "payload": {
+            "line": {
+              "altText": "Flex Message",
+              "contents": {
+                "hero": {
+                  "type": "image",
+                  "size": "full",
+                  "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_5_carousel.png",
+                  "aspectRatio": "20:13",
+                  "aspectMode": "cover"
+                },
+                "footer": {
+                  "contents": [
+                    {
+                      "style": "primary",
+                      "action": {
+                        "label": "เลือกวัน",
+                        "type": "datetimepicker",
+                        "mode": "date",
+                        "data": "date"
+                      },
+                      "type": "button"
+                    },
+                    {
+                      "type": "button",
+                      "action": {
+                        "label": "ยกเลิก",
+                        "data": "ยกเลิก",
+                        "type": "postback"
+                      }
+                    }
+                  ],
+                  "layout": "vertical",
+                  "spacing": "sm",
+                  "type": "box"
+                },
+                "body": {
+                  "layout": "vertical",
+                  "spacing": "sm",
+                  "contents": [
+                    {
+                      "wrap": true,
+                      "size": "xl",
+                      "text": "กรุณาเลือกวันที่",
+                      "type": "text",
+                      "weight": "regular"
+                    },
+                    {
+                      "type": "box",
+                      "contents": [
+                        {
+                          "type": "text",
+                          "wrap": true,
+                          "text": "เลือกวันเพื่อแสดงรายการสินค้าที่มีวันหมดอายุตรงกับวันที่เลือก",
+                          "weight": "regular"
+                        }
+                      ],
+                      "layout": "baseline"
+                    }
+                  ],
+                  "type": "box"
+                },
+                "type": "bubble"
+              },
+              "type": "flex"
+            }
+          }
         }
       ],
       "resetContexts": false
@@ -64,5 +130,5 @@
     }
   ],
   "webhookForSlotFilling": false,
-  "webhookUsed": true
+  "webhookUsed": false
 }
