@@ -108,7 +108,34 @@ def exp_image_handler(agent: WebhookClient):
             parameters={"expDate": str(exp_date), "imageId": image_id},
         )
         agent.add(
-            f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่"
+            Payload(
+                {
+                    "line": {
+                        "type": "text",
+                        "text": f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่",
+                        "quickReply": {
+                            "items": [
+                                {
+                                    "type": "action",
+                                    "action": {
+                                        "type": "message",
+                                        "label": "ใช่",
+                                        "text": "ใช่",
+                                    },
+                                },
+                                {
+                                    "type": "action",
+                                    "action": {
+                                        "type": "message",
+                                        "label": "ไม่ใช่",
+                                        "text": "ไม่ใช่",
+                                    },
+                                },
+                            ]
+                        },
+                    }
+                }
+            )
         )
     except IndexError:
         agent.context.set(
@@ -164,8 +191,36 @@ def exp_text_handler(agent: WebhookClient):
         parameters={"expDate": str(exp_date)},
     )
     agent.add(
-        f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่"
+        Payload(
+            {
+                "line": {
+                    "type": "text",
+                    "text": f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่",
+                    "quickReply": {
+                        "items": [
+                            {
+                                "type": "action",
+                                "action": {
+                                    "type": "message",
+                                    "label": "ใช่",
+                                    "text": "ใช่",
+                                },
+                            },
+                            {
+                                "type": "action",
+                                "action": {
+                                    "type": "message",
+                                    "label": "ไม่ใช่",
+                                    "text": "ไม่ใช่",
+                                },
+                            },
+                        ]
+                    },
+                }
+            }
+        )
     )
+
 
 def get_memo_custom_handler(agent: WebhookClient):
     exp_date = datetime.fromisoformat(agent.parameters["expDate"]).date()
@@ -224,7 +279,6 @@ def get_memo_custom_handler(agent: WebhookClient):
                 },
             }
             push_message(user_id, msg)
-
 
 
 def lambda_handler(event, context):
