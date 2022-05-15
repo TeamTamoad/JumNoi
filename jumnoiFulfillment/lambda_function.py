@@ -1,39 +1,29 @@
 import base64
-import calendar
-import itertools
-import urllib3
-
 import json
 import os
 from datetime import date, datetime
 
 import boto3
 import requests
+import urllib3
 from date_detection import create_date, get_date_regex
 from dialogflow_fulfillment import Payload, QuickReplies, WebhookClient
-from dotenv import dotenv_values
 
-
-config = dotenv_values()
-LINE_ACCESS_TOKEN = config["LINE_ACCESS_TOKEN"]
-BUCKET_NAME = config["BUCKET_NAME"]
-BUCKET_REGION = config["BUCKET_REGION"]
-TABLE_NAME = config["TABLE_NAME"]
-
-dynamodb_client = boto3.client("dynamodb")
-
-http = urllib3.PoolManager()
-
+LINE_ACCESS_TOKEN = os.getenv("LINE_ACCESS_TOKEN")
+BUCKET_NAME = os.getenv("BUCKET_NAME")
+BUCKET_REGION = os.getenv("BUCKET_REGION")
+TABLE_NAME = os.getenv("TABLE_NAME")
 
 assert LINE_ACCESS_TOKEN is not None
 assert TABLE_NAME is not None
 assert BUCKET_NAME is not None
-
+assert BUCKET_REGION is not None
 
 rekog_client = boto3.client("rekognition")
-dynamo_client = boto3.client("dynamodb")
+dynamodb_client = boto3.client("dynamodb")
 s3_client = boto3.client("s3")
 date_regex = get_date_regex()
+http = urllib3.PoolManager()
 
 
 def save_handler(agent: WebhookClient):
@@ -51,13 +41,13 @@ def save_handler(agent: WebhookClient):
 
     item_key = {"expDate": {"S": exp_date}, "userId": {"S": user_id}}
 
-    get_item_res = dynamo_client.get_item(
+    get_item_res = dynamodb_client.get_item(
         TableName=TABLE_NAME,
         Key=item_key,
     )
     print(f"{get_item_res}")
     if "Item" in get_item_res:
-        res = dynamo_client.update_item(
+        res = dynamodb_client.update_item(
             TableName=TABLE_NAME,
             Key=item_key,
             UpdateExpression="ADD s3Url :u",
@@ -65,7 +55,7 @@ def save_handler(agent: WebhookClient):
         )
         print("update item res", res)
     else:
-        res = dynamo_client.put_item(
+        res = dynamodb_client.put_item(
             TableName=TABLE_NAME,
             Item=item_key
             | {
@@ -194,88 +184,41 @@ def exp_text_handler(agent: WebhookClient):
     # )
 
 
-handler = {
-    "Note Exp - exp image": exp_image_handler,
-    "Note Exp - exp text": exp_text_handler,
-    "Note Exp - exp image - yes": save_handler,
-}
-
-
 def lambda_handler(event, context):
     body = json.loads(event["body"])
     print(body)
-        
-    def save_handler(agent: WebhookClient):
-        print(agent.parameters)
-        agent.add(f"บันทึกเรียบร้อย")
-
-    def exp_image_handler(agent: WebhookClient):
-        image_id = body["originalDetectIntentRequest"]["payload"]["data"]["message"][
-            "id"
-        ]
-        image_data = requests.get(
-            f"https://api-data.line.me/v2/bot/message/{image_id}/content",
-            headers={"Authorization": f"Bearer {LINE_ACCESS_TOKEN}"},
-        )
-        print("content size", len(image_data.content))
-        image = base64.decodebytes(base64.b64encode(image_data.content))
-
-        res = rekog_client.detect_text(Image={"Bytes": image})
-        dates = []
-        for text in res["TextDetections"]:
-            # remove all whitespaces from the testing string
-            text["DetectedText"] = "".join(text["DetectedText"].split())
-            result = date_regex.match(text["DetectedText"])
-            if result:
-                capture_groups = result.groups()
-                date = create_date(
-                    capture_groups[0], capture_groups[2], capture_groups[3]
-                )
-                dates.append(str(date))
-
-        dt = dates[0]
-        agent.context.set(
-            "noteexp-expimage-followup", lifespan_count=2, parameters={"expDate": dt}
-        )
-        agent.add(f"วันหมดอายุของสินค้าคือวันที่ {dt} ใช่หรือไม่")
-        # agent.add(QuickReplies(quick_replies=['ใช่เลย', 'ไม่ใช่']))
-
-    def exp_text_handler(agent: WebhookClient):
-        print(body["queryResult"]["parameters"]["expDate"])
-        dt = body["queryResult"]["parameters"]["expDate"]
-        agent.context.set(
-            "noteexp-expimage-followup", lifespan_count=2, parameters={"expDate": dt}
-        )
-        agent.add(f"วันหมดอายุของสินค้าคือวันที่ {dt} ใช่หรือไม่")
-        # agent.add(QuickReplies(quick_replies=['ใช่เลย', 'ไม่ใช่']))
 
     def getMemoCustom_handler(agent: WebhookClient):
         expDate = body["queryResult"]["parameters"]["expDate"].split("T")[0]
-        userId = body["originalDetectIntentRequest"]["payload"]["data"]["source"]["userId"]
-        
+        userId = body["originalDetectIntentRequest"]["payload"]["data"]["source"][
+            "userId"
+        ]
+
         dynamodb_response = dynamodb_client.query(
             TableName=TABLE_NAME,
             KeyConditionExpression="userId = :userId AND expDate = :expDate",
-            ExpressionAttributeValues={":userId": {"S": userId}, ":expDate": {"S": expDate}},
+            ExpressionAttributeValues={
+                ":userId": {"S": userId},
+                ":expDate": {"S": expDate},
+            },
         )
-        
+
         if len(dynamodb_response.get("Items", [])) == 0:
             msg = {
                 "type": "text",
                 "text": f"คุณไม่มีสินค้าที่กำลังจะหมดอายุในวันที่ {expDate} ค่ะ",
             }
             push_message(userId, msg)
-        
-        
+
         for item in dynamodb_response.get("Items", []):
             s3_url = [e for e in item.get("s3Url", {}).get("SS", [])]
-    
+
             msg = {
                 "type": "text",
                 "text": f"คุณมีสินค้าที่กำลังจะหมดอายุในวันที่ {expDate} จำนวน {len(s3_url)} รายการ",
             }
             push_message(userId, msg)
-    
+
             # each carousel message can contain no more than 12 images
             for i in range(0, len(s3_url), 12):
                 msg = {
@@ -304,26 +247,20 @@ def lambda_handler(event, context):
                     },
                 }
                 push_message(userId, msg)
-        
-        # agent.add(f"รายการที่หมดอายุในวันที่ {expDate} มีดังนี้")
-    
 
+        # agent.add(f"รายการที่หมดอายุในวันที่ {expDate} มีดังนี้")
 
     agent = WebhookClient(body)
-
     handler = {
         "Note Exp - exp image": exp_image_handler,
         "Note Exp - exp text": exp_text_handler,
         "Note Exp - exp image - yes": save_handler,
-        
-        "Get memo - start - custom" : getMemoCustom_handler,
+        "Get memo - start - custom": getMemoCustom_handler,
     }
-
-
     agent.handle_request(handler)
 
     return agent.response
-    
+
 
 def push_message(userId, payload):
     http.request(
@@ -336,4 +273,3 @@ def push_message(userId, payload):
         body=json.dumps({"to": userId, "messages": [payload]}),
         retries=False,
     )
-    
