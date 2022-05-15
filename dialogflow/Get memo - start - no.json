@@ -1,0 +1,57 @@
+{
+  "id": "1fd9c5ac-94d1-4a39-bb12-d001f64819fb",
+  "name": "Get memo - start - no",
+  "auto": true,
+  "condition": "",
+  "conditionalFollowupEvents": [],
+  "conditionalResponses": [],
+  "context": [
+    "Getmemo-start-followup"
+  ],
+  "contexts": [
+    "Getmemo-start-followup"
+  ],
+  "endInteraction": false,
+  "events": [],
+  "fallbackIntent": false,
+  "liveAgentHandoff": false,
+  "parentId": "246999da-9509-4fe7-bef3-7b7ec2bc1805",
+  "followUpIntents": [],
+  "priority": 500000,
+  "responses": [
+    {
+      "action": "Getmemo-start.Getmemo-start-no",
+      "affectedContexts": [],
+      "parameters": [],
+      "defaultResponsePlatforms": {},
+      "messages": [
+        {
+          "type": "message",
+          "condition": "",
+          "speech": [
+            "คุณได้ยกเลิก - ไว้คราวหน้าค่อยขอข้อมูลใหม่นะ"
+          ]
+        }
+      ],
+      "resetContexts": false
+    }
+  ],
+  "rootParentId": "246999da-9509-4fe7-bef3-7b7ec2bc1805",
+  "templates": [],
+  "userSays": [
+    {
+      "isTemplate": false,
+      "data": [
+        {
+          "text": "ยกเลิก",
+          "userDefined": false
+        }
+      ],
+      "count": 0,
+      "id": "39c08922-c1fc-4237-bbd6-820535b24c10",
+      "updated": null
+    }
+  ],
+  "webhookForSlotFilling": false,
+  "webhookUsed": false
+}

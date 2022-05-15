@@ -38,15 +38,7 @@
         }
       ],
       "defaultResponsePlatforms": {},
-      "messages": [
-        {
-          "type": "message",
-          "condition": "",
-          "speech": [
-            "คุณต้องการดูรายการที่วันหมดอายุตรงกับวันที่ $expDate ใช่ไหมค่ะ"
-          ]
-        }
-      ],
+      "messages": [],
       "resetContexts": false
     }
   ],

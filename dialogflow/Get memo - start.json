@@ -31,15 +31,40 @@
           "condition": "",
           "payload": {
             "line": {
+              "altText": "Flex Message",
               "contents": {
                 "hero": {
-                  "aspectRatio": "20:13",
-                  "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_5_carousel.png",
-                  "size": "full",
                   "type": "image",
+                  "size": "full",
+                  "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_5_carousel.png",
+                  "aspectRatio": "20:13",
                   "aspectMode": "cover"
                 },
-                "type": "bubble",
+                "footer": {
+                  "contents": [
+                    {
+                      "style": "primary",
+                      "action": {
+                        "label": "เลือกวัน",
+                        "type": "datetimepicker",
+                        "mode": "date",
+                        "data": "date"
+                      },
+                      "type": "button"
+                    },
+                    {
+                      "type": "button",
+                      "action": {
+                        "label": "ยกเลิก",
+                        "data": "ยกเลิก",
+                        "type": "postback"
+                      }
+                    }
+                  ],
+                  "layout": "vertical",
+                  "spacing": "sm",
+                  "type": "box"
+                },
                 "body": {
                   "layout": "vertical",
                   "spacing": "sm",
@@ -47,12 +72,11 @@
                     {
                       "wrap": true,
                       "size": "xl",
+                      "text": "กรุณาเลือกวันที่",
                       "type": "text",
-                      "weight": "regular",
-                      "text": "กรุณาเลือกวันที่"
+                      "weight": "regular"
                     },
                     {
-                      "layout": "baseline",
                       "type": "box",
                       "contents": [
                         {
@@ -61,38 +85,14 @@
                           "text": "เลือกวันเพื่อแสดงรายการสินค้าที่มีวันหมดอายุตรงกับวันที่เลือก",
                           "weight": "regular"
                         }
-                      ]
+                      ],
+                      "layout": "baseline"
                     }
                   ],
                   "type": "box"
                 },
-                "footer": {
-                  "type": "box",
-                  "contents": [
-                    {
-                      "action": {
-                        "label": "เลือกวัน",
-                        "data": "date",
-                        "type": "datetimepicker",
-                        "mode": "date"
-                      },
-                      "type": "button",
-                      "style": "primary"
-                    },
-                    {
-                      "type": "button",
-                      "action": {
-                        "type": "postback",
-                        "data": "ยกเลิก",
-                        "label": "ยกเลิก"
-                      }
-                    }
-                  ],
-                  "spacing": "sm",
-                  "layout": "vertical"
-                }
+                "type": "bubble"
               },
-              "altText": "Flex Message",
               "type": "flex"
             }
           }
