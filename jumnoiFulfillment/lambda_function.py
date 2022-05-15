@@ -7,7 +7,7 @@ import boto3
 import requests
 import urllib3
 from date_detection import create_date, get_date_regex
-from dialogflow_fulfillment import Payload, QuickReplies, WebhookClient
+from dialogflow_fulfillment import Payload, WebhookClient
 
 LINE_ACCESS_TOKEN = os.getenv("LINE_ACCESS_TOKEN")
 BUCKET_NAME = os.getenv("BUCKET_NAME")
@@ -167,86 +167,83 @@ def exp_text_handler(agent: WebhookClient):
         f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่"
     )
 
+def get_memo_custom_handler(agent: WebhookClient):
+    exp_date = datetime.fromisoformat(agent.parameters["expDate"]).date()
+    user_id = agent.original_request["payload"]["data"]["source"]["userId"]
+
+    dynamodb_response = dynamodb_client.query(
+        TableName=TABLE_NAME,
+        KeyConditionExpression="userId = :userId AND expDate = :expDate",
+        ExpressionAttributeValues={
+            ":userId": {"S": user_id},
+            ":expDate": {"S": str(exp_date)},
+        },
+    )
+
+    if len(dynamodb_response.get("Items", [])) == 0:
+        msg = {
+            "type": "text",
+            "text": f"คุณไม่มีสินค้าที่กำลังจะหมดอายุในวันที่ {exp_date.strftime('%d %B %Y')} ค่ะ",
+        }
+        push_message(user_id, msg)
+
+    for item in dynamodb_response.get("Items", []):
+        s3_url = [e for e in item.get("s3Url", {}).get("SS", [])]
+
+        msg = {
+            "type": "text",
+            "text": f"คุณมีสินค้าที่กำลังจะหมดอายุในวันที่ {exp_date.strftime('%d %B %Y')} จำนวน {len(s3_url)} รายการ",
+        }
+        push_message(user_id, msg)
+
+        # each carousel message can contain no more than 12 images
+        for i in range(0, len(s3_url), 12):
+            msg = {
+                "type": "flex",
+                "altText": "รายการสินค้าใกล้หมดอายุ",
+                "contents": {
+                    "type": "carousel",
+                    "contents": [
+                        {
+                            "type": "bubble",
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "image",
+                                        "url": f"https://{BUCKET_NAME}.s3.{BUCKET_REGION}.amazonaws.com/{url}",
+                                        "size": "full",
+                                    }
+                                ],
+                                "paddingAll": "0px",
+                            },
+                        }
+                        for url in s3_url[i : i + 12]
+                    ],
+                },
+            }
+            push_message(user_id, msg)
+
+
 
 def lambda_handler(event, context):
     body = json.loads(event["body"])
     print(body)
-
-    def getMemoCustom_handler(agent: WebhookClient):
-        exp_date = datetime.fromisoformat(agent.parameters["expDate"]).date()
-        userId = body["originalDetectIntentRequest"]["payload"]["data"]["source"][
-            "userId"
-        ]
-
-        dynamodb_response = dynamodb_client.query(
-            TableName=TABLE_NAME,
-            KeyConditionExpression="userId = :userId AND expDate = :expDate",
-            ExpressionAttributeValues={
-                ":userId": {"S": userId},
-                ":expDate": {"S": str(exp_date)},
-            },
-        )
-
-        if len(dynamodb_response.get("Items", [])) == 0:
-            msg = {
-                "type": "text",
-                "text": f"คุณไม่มีสินค้าที่กำลังจะหมดอายุในวันที่ {exp_date.strftime('%d %B %Y')} ค่ะ",
-            }
-            push_message(userId, msg)
-
-        for item in dynamodb_response.get("Items", []):
-            s3_url = [e for e in item.get("s3Url", {}).get("SS", [])]
-
-            msg = {
-                "type": "text",
-                "text": f"คุณมีสินค้าที่กำลังจะหมดอายุในวันที่ {exp_date.strftime('%d %B %Y')} จำนวน {len(s3_url)} รายการ",
-            }
-            push_message(userId, msg)
-
-            # each carousel message can contain no more than 12 images
-            for i in range(0, len(s3_url), 12):
-                msg = {
-                    "type": "flex",
-                    "altText": "รายการสินค้าใกล้หมดอายุ",
-                    "contents": {
-                        "type": "carousel",
-                        "contents": [
-                            {
-                                "type": "bubble",
-                                "body": {
-                                    "type": "box",
-                                    "layout": "vertical",
-                                    "contents": [
-                                        {
-                                            "type": "image",
-                                            "url": f"https://{BUCKET_NAME}.s3.{BUCKET_REGION}.amazonaws.com/{url}",
-                                            "size": "full",
-                                        }
-                                    ],
-                                    "paddingAll": "0px",
-                                },
-                            }
-                            for url in s3_url[i : i + 12]
-                        ],
-                    },
-                }
-                push_message(userId, msg)
-
-        # agent.add(f"รายการที่หมดอายุในวันที่ {expDate} มีดังนี้")
 
     agent = WebhookClient(body)
     handler = {
         "Note Exp - exp image": exp_image_handler,
         "Note Exp - exp text": exp_text_handler,
         "Note Exp - exp image - yes": save_handler,
-        "Get memo - start - custom": getMemoCustom_handler,
+        "Get memo - start - custom": get_memo_custom_handler,
     }
     agent.handle_request(handler)
 
     return agent.response
 
 
-def push_message(userId, payload):
+def push_message(user_id, payload):
     http.request(
         "POST",
         "https://api.line.me/v2/bot/message/push",
@@ -254,6 +251,6 @@ def push_message(userId, payload):
             "Authorization": f"Bearer {LINE_ACCESS_TOKEN}",
             "Content-Type": "application/json",
         },
-        body=json.dumps({"to": userId, "messages": [payload]}),
+        body=json.dumps({"to": user_id, "messages": [payload]}),
         retries=False,
     )
