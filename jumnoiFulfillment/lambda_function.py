@@ -110,12 +110,6 @@ def exp_image_handler(agent: WebhookClient):
         agent.add(
             f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่"
         )
-        # agent.add(
-        #     QuickReplies(
-        #         title=f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่",
-        #         quick_replies=["ใช่เลย", "ไม่ใช่"],
-        #     )
-        # )
     except IndexError:
         agent.context.set(
             "noteexp-product-followup",
@@ -125,7 +119,6 @@ def exp_image_handler(agent: WebhookClient):
             "note-process",
             lifespan_count=1,
         )
-        # agent.add("ไม่พบวันหมดอายุในรูป กรุณาส่งรูปหรือข้อความแสดงวันหมดอายุอีกครั้ง")
         agent.add(
             Payload(
                 {
@@ -164,9 +157,6 @@ def exp_image_handler(agent: WebhookClient):
 
 def exp_text_handler(agent: WebhookClient):
     print("Exp text handler")
-    # print(f"text original {agent.original_request}")
-    # print(f"text parameter {agent.parameters}")
-    # print(agent.query)
     exp_date = datetime.fromisoformat(agent.parameters["expDate"]).date()
     agent.context.set(
         "noteexp-expimage-followup",
@@ -176,12 +166,6 @@ def exp_text_handler(agent: WebhookClient):
     agent.add(
         f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่"
     )
-    # agent.add(
-    #     QuickReplies(
-    #         title=f"วันหมดอายุของสินค้าคือวันที่ {exp_date.strftime('%d %B %Y')} ใช่หรือไม่",
-    #         quick_replies=["ใช่เลย", "ไม่ใช่"],
-    #     )
-    # )
 
 
 def lambda_handler(event, context):
@@ -189,7 +173,7 @@ def lambda_handler(event, context):
     print(body)
 
     def getMemoCustom_handler(agent: WebhookClient):
-        expDate = body["queryResult"]["parameters"]["expDate"].split("T")[0]
+        exp_date = datetime.fromisoformat(agent.parameters["expDate"]).date()
         userId = body["originalDetectIntentRequest"]["payload"]["data"]["source"][
             "userId"
         ]
@@ -199,14 +183,14 @@ def lambda_handler(event, context):
             KeyConditionExpression="userId = :userId AND expDate = :expDate",
             ExpressionAttributeValues={
                 ":userId": {"S": userId},
-                ":expDate": {"S": expDate},
+                ":expDate": {"S": str(exp_date)},
             },
         )
 
         if len(dynamodb_response.get("Items", [])) == 0:
             msg = {
                 "type": "text",
-                "text": f"คุณไม่มีสินค้าที่กำลังจะหมดอายุในวันที่ {expDate} ค่ะ",
+                "text": f"คุณไม่มีสินค้าที่กำลังจะหมดอายุในวันที่ {exp_date.strftime('%d %B %Y')} ค่ะ",
             }
             push_message(userId, msg)
 
@@ -215,7 +199,7 @@ def lambda_handler(event, context):
 
             msg = {
                 "type": "text",
-                "text": f"คุณมีสินค้าที่กำลังจะหมดอายุในวันที่ {expDate} จำนวน {len(s3_url)} รายการ",
+                "text": f"คุณมีสินค้าที่กำลังจะหมดอายุในวันที่ {exp_date.strftime('%d %B %Y')} จำนวน {len(s3_url)} รายการ",
             }
             push_message(userId, msg)
 
