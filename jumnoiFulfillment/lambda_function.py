@@ -270,6 +270,10 @@ def get_memo_custom_handler(agent: WebhookClient):
                                     "type": "image",
                                     "url": f"https://{BUCKET_NAME}.s3.{BUCKET_REGION}.amazonaws.com/{url}",
                                     "size": "full",
+                                },
+                                {
+                                    "type": "text",
+                                    "text": f"วันหมดอายุ :",
                                 }
                             ],
                             "paddingAll": "0px",
