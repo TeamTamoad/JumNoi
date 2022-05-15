@@ -234,7 +234,7 @@ def get_memo_custom_handler(agent: WebhookClient):
             ":expDate": {"S": str(exp_date)},
         },
     )
-
+    
     items = dynamodb_response.get("Items", [])
     all_s3_url = [url for item in items for url in item["s3Url"]["SS"]]
 
@@ -245,45 +245,49 @@ def get_memo_custom_handler(agent: WebhookClient):
         }
         push_message(user_id, msg)
         return
-
+    
     msg = {
         "type": "text",
         "text": f"คุณมีสินค้าที่กำลังจะหมดอายุในวันที่ {exp_date.strftime('%d %B %Y')} จำนวน {len(all_s3_url)} รายการ",
     }
     push_message(user_id, msg)
 
-    # each carousel message can contain no more than 12 images
-    for i in range(0, len(all_s3_url), 12):
-        msg = {
-            "type": "flex",
-            "altText": "รายการสินค้าใกล้หมดอายุ",
-            "contents": {
-                "type": "carousel",
-                "contents": [
-                    {
-                        "type": "bubble",
-                        "body": {
-                            "type": "box",
-                            "layout": "vertical",
-                            "contents": [
-                                {
-                                    "type": "image",
-                                    "url": f"https://{BUCKET_NAME}.s3.{BUCKET_REGION}.amazonaws.com/{url}",
-                                    "size": "full",
-                                },
-                                {
-                                    "type": "text",
-                                    "text": f"วันหมดอายุ :",
-                                }
-                            ],
-                            "paddingAll": "0px",
-                        },
-                    }
-                    for url in all_s3_url[i : i + 12]
-                ],
-            },
-        }
-        push_message(user_id, msg)
+    for item in dynamodb_response.get("Items", []):
+        s3_url = [e for e in item.get("s3Url", {}).get("SS", [])]
+        expiredDate = datetime.fromisoformat(item["expDate"]["S"]).date()
+
+        # each carousel message can contain no more than 12 images
+        for i in range(0, len(all_s3_url), 12):
+            msg = {
+                "type": "flex",
+                "altText": "รายการสินค้าใกล้หมดอายุ",
+                "contents": {
+                    "type": "carousel",
+                    "contents": [
+                        {
+                            "type": "bubble",
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "image",
+                                        "url": f"https://{BUCKET_NAME}.s3.{BUCKET_REGION}.amazonaws.com/{url}",
+                                        "size": "full",
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": f"วันหมดอายุ : {expiredDate.strftime('%d %B %Y')}",
+                                    }
+                                ],
+                                "paddingAll": "0px",
+                            },
+                        }
+                        for url in s3_url[i : i + 12]
+                    ],
+                },
+            }
+            push_message(user_id, msg)
 
 
 def lambda_handler(event, context):
