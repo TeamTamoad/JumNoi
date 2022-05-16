@@ -1,7 +1,7 @@
 import base64
 import json
 import os
-from datetime import date, datetime
+from datetime import date, datetime, timezone, timedelta
 import random
 
 import boto3
@@ -232,15 +232,19 @@ def get_memo_custom_handler(agent: WebhookClient):
     ]
     random.shuffle(colors)
 
+    bangkok_tz = timezone(timedelta(hours=7))
+    today = datetime.now(tz=bangkok_tz).date()
+
     exp_date = datetime.fromisoformat(agent.parameters["expDate"]).date()
     user_id = agent.original_request["payload"]["data"]["source"]["userId"]
 
     dynamodb_response = dynamodb_client.scan(
         TableName=TABLE_NAME,
-        FilterExpression="userId = :userId AND expDate <= :expDate",
+        FilterExpression="userId = :userId AND expDate >= :today AND expDate <= :expDate",
         ExpressionAttributeValues={
             ":userId": {"S": user_id},
             ":expDate": {"S": str(exp_date)},
+            ":today": {"S": str(today)},
         },
     )
 
@@ -250,6 +254,7 @@ def get_memo_custom_handler(agent: WebhookClient):
         for i, item in enumerate(items)
         for url in item.get("s3Url", {}).get("SS", [])
     ]
+    all_data.sort(key=lambda x: x[1])
 
     if len(all_data) == 0:
         msg = {
@@ -333,7 +338,7 @@ def get_memo_custom_handler(agent: WebhookClient):
                     }
                     for (url, exp_date_text, color) in all_data[i : i + 12]
                 ],
-            }
+            },
         }
         push_message(user_id, msg)
 
