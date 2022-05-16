@@ -18,31 +18,30 @@ http = urllib3.PoolManager()
 
 def lambda_handler(event, context):
     bangkok_tz = timezone(timedelta(hours=7))
-    today = datetime.now(tz=bangkok_tz)
+    today = datetime.now(tz=bangkok_tz).date()
 
-    dynamodb_key = []
-    s3_key = []
+    dynamodb_response = dynamodb_client.scan(
+        TableName=TABLE_NAME,
+        FilterExpression="expDate < :expDate",
+        ExpressionAttributeValues={
+            ":expDate": {"S": str(today)},
+        },
+    )
 
-    for i in range(7):
-        delete_day = (today - timedelta(days=i + 1)).strftime("%Y-%m-%d")
-        dynamodb_response = dynamodb_client.query(
-            TableName=TABLE_NAME,
-            KeyConditionExpression="expDate = :expDate",
-            ExpressionAttributeValues={":expDate": {"S": delete_day}},
-        )
-
-        for item in dynamodb_response.get("Items", []):
-            dynamodb_key.append(
-                {
-                    "Key": {
-                        "expDate": item.get("expDate", {}),
-                        "userId": item.get("userId", {}),
-                    }
-                }
-            )
-            s3_key.extend(
-                [{"Key": e} for e in item.get("s3Url", {}).get("SS", [])]
-            )
+    dynamodb_key = [
+        {
+            "Key": {
+                "expDate": item.get("expDate", {}),
+                "userId": item.get("userId", {}),
+            }
+        }
+        for item in dynamodb_response.get("Items", [])
+    ]
+    s3_key = [
+        {"Key": e}
+        for item in dynamodb_response.get("Items", [])
+        for e in item.get("s3Url", {}).get("SS", [])
+    ]
 
     for i in range(0, len(s3_key), 1000):
         s3_client.delete_objects(
