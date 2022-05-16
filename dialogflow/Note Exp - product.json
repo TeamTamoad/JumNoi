@@ -60,8 +60,8 @@
                   {
                     "type": "action",
                     "action": {
-                      "type": "camera",
-                      "label": "ถ่ายรูป"
+                      "label": "ถ่ายรูป",
+                      "type": "camera"
                     }
                   },
                   {
@@ -74,16 +74,16 @@
                   {
                     "type": "action",
                     "action": {
-                      "label": "เลือกวัน",
-                      "mode": "date",
+                      "type": "datetimepicker",
                       "data": "date",
-                      "type": "datetimepicker"
+                      "label": "เลือกวัน",
+                      "mode": "date"
                     }
                   }
                 ]
               },
-              "type": "text",
-              "text": "กรุณาส่งรูปหรือข้อความแสดงวันหมดอายุของสินค้า"
+              "text": "กรุณาส่งรูปหรือข้อความแสดงวันหมดอายุของสินค้า",
+              "type": "text"
             }
           }
         }

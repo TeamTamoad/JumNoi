@@ -53,14 +53,16 @@
           "condition": "",
           "payload": {
             "line": {
+              "text": "กรุณาส่งรูปหรือข้อความแสดงวันหมดอายุอีกครั้ง",
+              "type": "text",
               "quickReply": {
                 "items": [
                   {
-                    "type": "action",
                     "action": {
                       "label": "ถ่ายรูป",
                       "type": "camera"
-                    }
+                    },
+                    "type": "action"
                   },
                   {
                     "action": {
@@ -70,18 +72,16 @@
                     "type": "action"
                   },
                   {
-                    "type": "action",
                     "action": {
-                      "mode": "date",
-                      "label": "เลือกวัน",
                       "data": "date",
-                      "type": "datetimepicker"
-                    }
+                      "mode": "date",
+                      "type": "datetimepicker",
+                      "label": "เลือกวัน"
+                    },
+                    "type": "action"
                   }
                 ]
-              },
-              "text": "กรุณาส่งรูปหรือข้อความแสดงวันหมดอายุอีกครั้ง",
-              "type": "text"
+              }
             }
           }
         }

@@ -20,7 +20,7 @@
       "affectedContexts": [
         {
           "name": "Getmemo-start-followup",
-          "lifespan": 2
+          "lifespan": 1
         }
       ],
       "parameters": [],
@@ -31,69 +31,69 @@
           "condition": "",
           "payload": {
             "line": {
-              "altText": "Flex Message",
               "contents": {
-                "hero": {
-                  "type": "image",
-                  "size": "full",
-                  "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_5_carousel.png",
-                  "aspectRatio": "20:13",
-                  "aspectMode": "cover"
-                },
-                "footer": {
-                  "contents": [
-                    {
-                      "style": "primary",
-                      "action": {
-                        "label": "เลือกวัน",
-                        "type": "datetimepicker",
-                        "mode": "date",
-                        "data": "date"
-                      },
-                      "type": "button"
-                    },
-                    {
-                      "type": "button",
-                      "action": {
-                        "label": "ยกเลิก",
-                        "data": "ยกเลิก",
-                        "type": "postback"
-                      }
-                    }
-                  ],
-                  "layout": "vertical",
-                  "spacing": "sm",
-                  "type": "box"
-                },
+                "type": "bubble",
                 "body": {
-                  "layout": "vertical",
-                  "spacing": "sm",
                   "contents": [
                     {
-                      "wrap": true,
-                      "size": "xl",
                       "text": "กรุณาเลือกวันที่",
+                      "size": "xl",
+                      "wrap": true,
                       "type": "text",
                       "weight": "regular"
                     },
                     {
-                      "type": "box",
                       "contents": [
                         {
+                          "text": "เลือกวันเพื่อแสดงรายการสินค้าที่มีวันหมดอายุภายในวันที่เลือก",
                           "type": "text",
                           "wrap": true,
-                          "text": "เลือกวันเพื่อแสดงรายการสินค้าที่มีวันหมดอายุตรงกับวันที่เลือก",
                           "weight": "regular"
                         }
                       ],
+                      "type": "box",
                       "layout": "baseline"
                     }
                   ],
-                  "type": "box"
+                  "layout": "vertical",
+                  "type": "box",
+                  "spacing": "sm"
                 },
-                "type": "bubble"
+                "hero": {
+                  "url": "https://images.unsplash.com/photo-1588453251771-cd919b362ed4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1528&q=80",
+                  "aspectRatio": "20:13",
+                  "aspectMode": "cover",
+                  "size": "full",
+                  "type": "image"
+                },
+                "footer": {
+                  "spacing": "sm",
+                  "layout": "vertical",
+                  "type": "box",
+                  "contents": [
+                    {
+                      "style": "primary",
+                      "type": "button",
+                      "action": {
+                        "type": "datetimepicker",
+                        "data": "date",
+                        "label": "เลือกวัน",
+                        "mode": "date"
+                      }
+                    },
+                    {
+                      "action": {
+                        "data": "ยกเลิก",
+                        "label": "ยกเลิก",
+                        "type": "postback"
+                      },
+                      "type": "button"
+                    }
+                  ]
+                }
               },
-              "type": "flex"
+              "type": "flex",
+              "altText": "Flex Message"
             }
           }
         }
