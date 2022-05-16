@@ -2,6 +2,7 @@ import base64
 import json
 import os
 from datetime import date, datetime
+import random
 
 import boto3
 import requests
@@ -29,9 +30,6 @@ http = urllib3.PoolManager()
 def save_handler(agent: WebhookClient):
     """Save item image to S3 and save meta-data to dynamodb"""
     print("Save handler")
-    # print("agent.parameters in save_handler", agent.parameters)
-    # print("body in save_handler", body)
-    # print("agent original requests", agent.original_request)
     product_id = str(int(agent.parameters["productId"]))
     exp_date = agent.parameters["expDate"]
     user_id = agent.original_request["payload"]["data"]["source"]["userId"]
@@ -223,6 +221,17 @@ def exp_text_handler(agent: WebhookClient):
 
 
 def get_memo_custom_handler(agent: WebhookClient):
+    colors = [
+        "#03303A",
+        "#FF6B6E",
+        "#464F69",
+        "#A17DF5",
+        "#0D8186",
+        "#CC6D1B",
+        "#579918",
+    ]
+    random.shuffle(colors)
+
     exp_date = datetime.fromisoformat(agent.parameters["expDate"]).date()
     user_id = agent.original_request["payload"]["data"]["source"]["userId"]
 
@@ -234,60 +243,99 @@ def get_memo_custom_handler(agent: WebhookClient):
             ":expDate": {"S": str(exp_date)},
         },
     )
-    
+
     items = dynamodb_response.get("Items", [])
-    all_data = [(url, item["expDate"]) for item in items for url in item["s3Url"]["SS"]]
+    all_data = [
+        (url, item.get("expDate", {}).get("S"), colors[i % len(colors)])
+        for i, item in enumerate(items)
+        for url in item.get("s3Url", {}).get("SS", [])
+    ]
 
     if len(all_data) == 0:
         msg = {
             "type": "text",
-            "text": f"คุณไม่มีสินค้าที่กำลังจะหมดอายุในวันที่ {exp_date.strftime('%d %B %Y')} ค่ะ",
+            "text": f"คุณไม่มีสินค้าที่กำลังจะหมดอายุภายในวันที่ {exp_date.strftime('%d %B %Y')}",
         }
         push_message(user_id, msg)
         return
-    
+
     msg = {
         "type": "text",
-        "text": f"คุณมีสินค้าที่กำลังจะหมดอายุในวันที่ {exp_date.strftime('%d %B %Y')} จำนวน {len(all_data)} รายการ",
+        "text": f"คุณมีสินค้าที่กำลังจะหมดอายุภายในวันที่ {exp_date.strftime('%d %B %Y')} จำนวน {len(all_data)} รายการ",
     }
     push_message(user_id, msg)
 
-    for item in dynamodb_response.get("Items", []):
-        s3_url = [e for e in item.get("s3Url", {}).get("SS", [])]
-        expiredDate = datetime.fromisoformat(item["expDate"]["S"]).date()
-
-        # each carousel message can contain no more than 12 images
-        for i in range(0, len(all_s3_url), 12):
-            msg = {
-                "type": "flex",
-                "altText": "รายการสินค้าใกล้หมดอายุ",
-                "contents": {
-                    "type": "carousel",
-                    "contents": [
-                        {
-                            "type": "bubble",
-                            "body": {
-                                "type": "box",
-                                "layout": "vertical",
-                                "contents": [
-                                    {
-                                        "type": "image",
-                                        "url": f"https://{BUCKET_NAME}.s3.{BUCKET_REGION}.amazonaws.com/{url}",
-                                        "size": "full",
-                                    },
-                                    {
-                                        "type": "text",
-                                        "text": f"วันหมดอายุ : {expiredDate.strftime('%d %B %Y')}",
-                                    }
-                                ],
-                                "paddingAll": "0px",
-                            },
-                        }
-                        for url in s3_url[i : i + 12]
-                    ],
-                },
+    # each carousel message can contain no more than 12 images
+    for i in range(0, len(all_data), 12):
+        msg = {
+            "type": "flex",
+            "altText": "รายการสินค้าใกล้หมดอายุ",
+            "contents": {
+                "type": "carousel",
+                "contents": [
+                    {
+                        "type": "bubble",
+                        "body": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "image",
+                                    "url": f"https://{BUCKET_NAME}.s3.{BUCKET_REGION}.amazonaws.com/{url}",
+                                    "size": "full",
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                        {
+                                            "type": "box",
+                                            "layout": "vertical",
+                                            "contents": [
+                                                {"type": "filler"},
+                                                {
+                                                    "type": "box",
+                                                    "layout": "baseline",
+                                                    "contents": [
+                                                        {"type": "filler"},
+                                                        {
+                                                            "type": "text",
+                                                            "text": f"วันหมดอายุ: {datetime.strptime(exp_date_text, '%Y-%m-%d').date().strftime('%d %B %Y')}",
+                                                            "color": "#ffffff",
+                                                            "flex": 0,
+                                                            "weight": "bold",
+                                                            "align": "center",
+                                                            "size": "md",
+                                                        },
+                                                        {"type": "filler"},
+                                                    ],
+                                                    "spacing": "sm",
+                                                },
+                                                {"type": "filler"},
+                                            ],
+                                            "spacing": "sm",
+                                            "margin": "none",
+                                        }
+                                    ],
+                                    "position": "absolute",
+                                    "offsetBottom": "0px",
+                                    "offsetStart": "0px",
+                                    "offsetEnd": "0px",
+                                    "backgroundColor": color,
+                                    "justifyContent": "center",
+                                    "alignItems": "center",
+                                    "paddingTop": "10px",
+                                    "paddingBottom": "10px",
+                                },
+                            ],
+                            "paddingAll": "0px",
+                        },
+                    }
+                    for (url, exp_date_text, color) in all_data[i : i + 12]
+                ],
             }
-            push_message(user_id, msg)
+        }
+        push_message(user_id, msg)
 
 
 def lambda_handler(event, context):
